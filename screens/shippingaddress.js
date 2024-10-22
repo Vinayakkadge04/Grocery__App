@@ -1,5 +1,5 @@
-import React, { useState , useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView ,Alert} from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView, Alert ,ActivityIndicator} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from "axios";
 import { URL } from "../utils/constants";
@@ -9,7 +9,7 @@ import RazorpayCheckout from 'react-native-razorpay';
 export default function ShippingAddress({ navigation }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
-    const {token , info} = useSelector((state)=>state.auth)
+    const { token, info } = useSelector((state) => state.auth)
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const [Name, setName] = useState('');
     const [email, setemail] = useState('');
@@ -20,7 +20,8 @@ export default function ShippingAddress({ navigation }) {
     const [country, setCountry] = useState('');
     const [orderData, setOrderData] = useState({});
     const [paymentData, setpaymentData] = useState({});
-   
+    const [isloadding , setisloadding]=useState(false);
+
     // const UpdateData = async () => {
     //     try {
     //         const url = URL+`customer/update/${info.customerId}`;
@@ -39,7 +40,7 @@ export default function ShippingAddress({ navigation }) {
     //                  Authorization : `Bearer ${token}`
     //             },
     //         },
-            
+
     //     );
     //         if (result.status === 200) {
     //             console.log("Hello");
@@ -56,10 +57,66 @@ export default function ShippingAddress({ navigation }) {
 
 
 
+
+
+
+    const UpdateData = async() => {
+        try {
+            setisloadding(true)
+            const url = URL + `/customer/update/${info.customerId}`;
+            console.log(Name, email,phone,address,zip,city,country);
+            const result = await axios.post(url, {
+                customerName: Name,
+                customerEmail : email,
+                customerPhone : phone,
+                customerAddress : address,
+                customerZipCode : zip,
+                customerCity : city,
+                customerCountry : country
+
+            }, 
+            {
+                headers: {
+                   
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            );
+            console.log("StatusCode" , result.status)
+            console.log(result.status === 200)
+            {
+                    createOrder();
+            }
+        }
+       
+        catch (error) {
+            setisloadding(false)
+            console.log("Error to Update Customer", error);
+        }
+    }
+
+    const checkAddress = () =>{
+        console.log("Info Address: ",info.customerAddress)
+        if(info.customerAddress !== null){
+            createOrder();
+        }
+        else{
+            if(address){
+                console.log("hello")
+                UpdateData();
+            }
+            else{
+                Alert.alert("Please Fill all details...");
+            }
+        }
+       
+    }
+
     const createOrder = async () => {
         try {
-
+            setisloadding(true)
             const url = URL + '/create-order';
+            console.log(url);
             const result = await axios.post(url, {},
                 {
                     headers:
@@ -70,41 +127,25 @@ export default function ShippingAddress({ navigation }) {
             );
 
             if (result?.status === 200) {
-                setOrderData(result?.data);
-                console.log("Order" ,orderData)
-                console.log("Result " ,result.data);
-                Alert.alert("Press OK to Proceed for Payment...","",
-                [
-                    {
-                        text:"OK",
-                        onPress: async() => 
-                            {   console.log("Hello");
-                                if (orderData){
-                                   await OpenRazerpay();
-                                }
-                                else{
-                                    Alert.alert("Order Not Created...Try Again")
-                                }
-                            }
-                    }
-                ]
-                );
-                
+                setisloadding(false)
+             await OpenRazerpay(result.data);
             }
-            else{
+            else {
+                setisloadding(false)
                 Alert.alert("Order Not Created...Try Again")
             }
 
+
         } catch (error) {
 
-            console.log(JSON.stringify(error, null, 2),error);
-            console.log(error?.response?.data?.message || error.message,error);
+            console.log(JSON.stringify(error, null, 2), error);
+            console.log(error?.response?.data?.message || error.message, error);
             Alert.alert("Network Problem , Please Try Again");
         }
     }
 
-    const OpenRazerpay = () => {
-       
+    const OpenRazerpay = async (orderData) => {
+
         var options = {
             description: 'Credits towards consultation',
             image: 'https://t4.ftcdn.net/jpg/02/67/29/93/360_F_267299376_Rwmrov0JGO5savkHry0J2ySMhlDd5bJN.jpg',
@@ -120,39 +161,29 @@ export default function ShippingAddress({ navigation }) {
             },
             theme: { color: '#53a20e' }
         }
-            RazorpayCheckout.open(options).then((data) => {
+        await RazorpayCheckout.open(options).then( (data) => {
             // handle success
-
             setpaymentData(data);
-            console.log("DATA: ",data);
-            Alert.alert("Payment Success","",
-                [
-                    {
-                        text:"OK",
-                        onPress:()=>{
-                            if(paymentData){
-                                VerifyPayment();
-                            }
-                            else {
-                                Alert.alert("Payment Verification Not Proceed...Internal Server Error, Please Try Again");
-                                
-                            }
-                        }
-                    }
-                ]
-            )
-            
-            
-            
+            console.log("DATA: ", data);
+            if (paymentData) {
+                 VerifyPayment(data);
+            }
+            else {
+                Alert.alert("Payment Verification Not Proceed...Internal Server Error, Please Try Again");
+
+            }
+
+
+
         }).catch((error) => {
             // handle failure
             alert(`Error: ${error.code} | ${error.description}`);
+            console.log("Razerpay Error####",error);
         });
     }
 
-    const VerifyPayment = async () => {
+    const VerifyPayment = async (paymentData) => {
         try {
-           
             const url = URL + '/verify-payment'
             const result = await axios.post(url, {
                 razorpay_order_id: paymentData.razorpay_order_id,
@@ -168,15 +199,15 @@ export default function ShippingAddress({ navigation }) {
                 }
 
             );
-            console.log("RESULT STATUS:" ,result.status);
+            console.log("RESULT STATUS:", result.status);
             if (result.status === 200) {
                 Alert.alert("Payment Verified...!");
                 navigation.navigate('ordersuccess')
             }
         }
         catch (error) {
-            console.log(JSON.stringify(error, null, 2),error);
-            console.log(error?.response?.data?.message || error.message,error);
+            console.log(JSON.stringify(error, null, 2), error);
+            console.log(error?.response?.data?.message || error.message, error);
             Alert.alert("Payment Verification Failed..Please Try Again🙏"
             )
         }
@@ -186,52 +217,51 @@ export default function ShippingAddress({ navigation }) {
         }
 
     }
-   
 
     useEffect(() => {
-      
+
     }, []);
 
 
 
-   
+
     return (
         <View>
-            <ScrollView 
+            <ScrollView
                 showsVerticalScrollIndicator={false} >
-            <View style={style.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons style={{ fontSize: 34, color: 'black', right: 60 }} name="arrow-back" />
-                </TouchableOpacity>
-                <Text style={style.headertitle}>Shipping Address</Text>
-            </View>
-           
-            <ScrollView 
-                showsVerticalScrollIndicator={false} >
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-                    <View>
-                        <View style={style.circle}>
-                            <Ionicons style={style.icon} name='checkmark-sharp' />
-                        </View>
-                        <Text style={style.smalltext}>Delivery</Text>
-                    </View>
-                    <View style={style.horizonline}></View>
-                    <View>
-                        <View style={[style.circle, { backgroundColor: 'white' }]}>
-                            <Text style={{ color: 'grey', fontSize: 20 }}>2</Text>
-                        </View>
-                        <Text style={style.smalltext}>Address</Text>
-                    </View>
-                    <View style={[style.horizonline, { backgroundColor: 'grey' }]}></View>
-                    <View>
-                        <View style={[style.circle, { backgroundColor: 'white' }]}>
-                            <Text style={{ color: 'grey', fontSize: 20 }}>3</Text>
-                        </View>
-                        <Text style={style.smalltext}>Payment</Text>
-                    </View>
+                <View style={style.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Ionicons style={{ fontSize: 34, color: 'black', right: 60 }} name="arrow-back" />
+                    </TouchableOpacity>
+                    <Text style={style.headertitle}>Shipping Address</Text>
                 </View>
 
-                <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false} >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+                        <View>
+                            <View style={style.circle}>
+                                <Ionicons style={style.icon} name='checkmark-sharp' />
+                            </View>
+                            <Text style={style.smalltext}>Delivery</Text>
+                        </View>
+                        <View style={style.horizonline}></View>
+                        <View>
+                            <View style={[style.circle, { backgroundColor: 'white' }]}>
+                                <Text style={{ color: 'grey', fontSize: 20 }}>2</Text>
+                            </View>
+                            <Text style={style.smalltext}>Address</Text>
+                        </View>
+                        <View style={[style.horizonline, { backgroundColor: 'grey' }]}></View>
+                        <View>
+                            <View style={[style.circle, { backgroundColor: 'white' }]}>
+                                <Text style={{ color: 'grey', fontSize: 20 }}>3</Text>
+                            </View>
+                            <Text style={style.smalltext}>Payment</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ marginHorizontal: 20, marginTop: 10 }}>
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="person-outline" />
                             <TextInput
@@ -242,16 +272,16 @@ export default function ShippingAddress({ navigation }) {
                             <Ionicons size={28} color={'grey'} name="mail-outline" />
                             <TextInput
                                 onChangeText={(text) => setemail(text)}
-                                style={style.inputtext} placeholder={info ? `${info.customerEmail}` : "Name"}  />
+                                style={style.inputtext} placeholder={info.customerEmail ? `${info.customerEmail}` : "Email"} />
                         </View>
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="call-outline" />
                             <TextInput
                                 onChangeText={(text) => setphone(text)}
-                                style={style.inputtext} placeholder={info.customerPhone ? `${info.customerPhone}` : "Phone"}  />
+                                style={style.inputtext} placeholder={info.customerPhone ? `${info.customerPhone}` : "Phone"} />
                         </View>
                         <View style={style.textbox}>
-                            <Ionicons size={28} color={'grey'} name="location-outline"/>
+                            <Ionicons size={28} color={'grey'} name="location-outline" />
                             <TextInput
                                 onChangeText={(text) => setAddress(text)}
                                 style={style.inputtext} placeholder={info.customerAddress ? `${info.customerAddress}` : "Address"} />
@@ -260,41 +290,41 @@ export default function ShippingAddress({ navigation }) {
                             <Ionicons size={28} color={'grey'} name="card-outline" />
                             <TextInput
                                 onChangeText={(text) => setZip(text)}
-                                style={style.inputtext} placeholder={info.customerZipCode ? `${info.customerZipCode}` : "Zip Code"}  />
+                                style={style.inputtext} placeholder={info.customerZipCode ? `${info.customerZipCode}` : "Zip Code"} />
                         </View>
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="map-outline" />
                             <TextInput
                                 onChangeText={(text) => setCity(text)}
-                                style={style.inputtext} placeholder={info.customerCity ? `${info.customerCity}` : "City"}  />
+                                style={style.inputtext} placeholder={info.customerCity ? `${info.customerCity}` : "City"} />
                         </View>
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="earth-outline" />
                             <TextInput
                                 onChangeText={(text) => setCountry(text)}
-                                style={style.inputtext} placeholder={info.customerCountry ? `${info.customerCountry}` : "Country"}  />
+                                style={style.inputtext} placeholder={info.customerCountry ? `${info.customerCountry}` : "Country"} />
                         </View>
                     </View>
 
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', margin: 20, }}>
-                    <Switch
-                        style={{ transform: [{ scaleX: .8 }, { scaleY: .7 }] }}
-                        trackColor={{ false: "#fffff", true: "#6CC51D" }}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled} />
-                    <Text>Remember me</Text>
-                </View>
-
-                <TouchableOpacity onPress={() => { 
-                    // UpdateData();
-                    createOrder();
-                    
-                    }}>
-                    <View style={style.butn}>
-                        <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Next</Text>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', margin: 20, }}>
+                        <Switch
+                            style={{ transform: [{ scaleX: .8 }, { scaleY: .7 }] }}
+                            trackColor={{ false: "#fffff", true: "#6CC51D" }}
+                            onValueChange={toggleSwitch}
+                            value={isEnabled} />
+                        <Text>Remember me</Text>
                     </View>
-                </TouchableOpacity>
-            </ScrollView>
+
+                    <TouchableOpacity onPress={() => {
+                        // UpdateData();
+                       checkAddress();
+
+                    }}>
+                        <View style={style.butn}>
+                            <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Next</Text>
+                        </View>
+                    </TouchableOpacity>
+                </ScrollView>
             </ScrollView>
         </View>
     );

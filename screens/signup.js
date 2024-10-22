@@ -11,33 +11,47 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios';
 import { URL } from '../utils/constants';
-
+import { Controller, useForm } from 'react-hook-form';
 export default function Signup(props) {
+
+
+
+
+  const {
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm()
+
 
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [phone, setphone] = useState();
   const [password, setpassword] = useState("");
+  const [secureText , setSecureText] = useState(true);
 
   const signUpAPI = async () => {
     try {
       console.log(name, email, phone, password);
-      const url = URL+"/customer/";
+      const url = URL + "/customer/";
       const result = await axios.post(url, {
         customerName: name,
         customerEmail: email,
         customerPhone: phone,
         customerPassword: password
       },
-    );
-      
-      if (result.status === 201){
+      );
+
+      if (result.status === 201) {
         console.log('helloi')
         Alert.alert("You registered Successfully")
         props.navigation.navigate('Login')
       }
-        
-      
+
+
     } catch (error) {
       Alert.alert("Something went wrong...Please Try Again")
       console.log(JSON.stringify(error, null, 2));
@@ -67,11 +81,34 @@ export default function Signup(props) {
           <View>
             <Text style={[style.para, { paddingBottom: 20 }]}>Quickly create account</Text>
           </View>
+
+
           <View style={[style.textBox, { justifyContent: 'start' }]}>
             <Ionicons name='person-outline' size={25} color={'#868889'} />
             <TextInput onChangeText={(text) => setname(text)}
               placeholder='Name' style={{ fontSize: 15, marginLeft: 12 }} />
           </View>
+
+          {/* <Controller
+            control={control}
+            render={({
+              field: { onChange, onBlur, value },
+            }) => (
+              <TextInput
+               placeholder='Name'
+              style={style.textBox}
+                autoCapitalize="none"
+                onChangeText={(text) => setname(text)}
+                // onBlur={onBlur}
+                // value={value}
+                color='black'
+              />
+            )}
+            name="firstname"
+            rules={{
+              required: 'Firstname is required',
+            }}
+          /> */}
 
           <View style={[style.textBox, { justifyContent: 'start' }]}>
             <Ionicons name='mail-outline' size={28} color={'#868889'} />
@@ -86,16 +123,18 @@ export default function Signup(props) {
           </View>
 
           <View style={style.textBox}>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View style={{ flex: 1, flexDirection: 'row',alignItems:'center' }}>
               <Ionicons name='lock-closed-outline' size={28} color={'#868889'} />
               <TextInput onChangeText={(text) => setpassword(text)}
-                placeholder='Password' secureTextEntry={true} style={{ fontSize: 15, marginLeft: 12 }} />
+                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 15, marginLeft: 12 }} />
             </View>
-            <Ionicons name='eye-outline' size={24} color={'#868889'} /> 
+            <TouchableOpacity onPress={() => {setSecureText(!secureText)}}>
+            <Ionicons name={secureText ? 'eye-off-outline' : 'eye-outline'} size={24} color={'#868889'}/>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity onPress={() => {
-            console.log('Hi')
+            console.log('Hi');
             signUpAPI();
           }
           }>

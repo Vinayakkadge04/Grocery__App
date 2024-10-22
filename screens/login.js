@@ -8,6 +8,7 @@ import {
   TextInput,
   Switch,
   Alert,
+  ActivityIndicator
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -15,7 +16,7 @@ import axios from 'axios';
 import {useDispatch} from 'react-redux'
 import { login } from '../component/redux/Authslice';
 import { URL } from '../utils/constants';
-
+import { useForm, Controller } from 'react-hook-form';
 export default function LoginScreen(props) {
 
   const dispatch = useDispatch();
@@ -25,13 +26,14 @@ export default function LoginScreen(props) {
   const [emailError, setemailError] = useState(false);
   const [passwordError, setpasswordError] = useState(false);
   const [secureText , setSecureText] = useState(true);
-
+  const [isloadding , setisloadding] = useState(false);
   const loginAPI = async () => {
 
     !email ? setemailError(true) : setemailError(false) ;
     !password ? setpasswordError(true) : setpasswordError(false);
    
     try {
+      setisloadding(true);
       const url = URL+"/customer/login";
       const result = await axios.post(url, {
         customerEmail:email,
@@ -46,7 +48,9 @@ export default function LoginScreen(props) {
         dispatch(login({token:result.data.token,info:result.data.customer}));
         props.navigation.navigate('Main')
       }
+      setisloadding(false)
     } catch (error) {
+      setisloadding(false)
       Alert.alert("Login failed")
       console.log(JSON.stringify(error, null,2));
       console.log(error?.response?.data?.message || error.message);
@@ -90,7 +94,7 @@ export default function LoginScreen(props) {
             }
           </View>
           <View style={style.textBox}>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View style={{ flex: 1, flexDirection: 'row' ,alignItems:'center'}}>
               <Ionicons name='lock-closed-outline' size={28} color={'#868889'} />
               <TextInput onChangeText={(text) => setpassword(text)}
                 placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 15, marginLeft: 12 }} />
@@ -116,7 +120,7 @@ export default function LoginScreen(props) {
               <Text style={{ color: '#407EC7' }}>Forgot Password</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => {
+          {/* <TouchableOpacity onPress={() => {
             loginAPI();
             console.log(email, password);
            
@@ -124,7 +128,23 @@ export default function LoginScreen(props) {
             <View style={style.butn}>
               <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Login</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+
+          {isloadding ? (
+            <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
+          ) : (
+            <TouchableOpacity onPress={() => {
+              loginAPI();
+              console.log(email, password);
+            }}>
+              <View style={style.butn}>
+                <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Login</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+
+
           <View style={style.richtext}>
             <Text style={{ color: 'grey', fontSize: 18 }}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => props.navigation.navigate('signup')}>

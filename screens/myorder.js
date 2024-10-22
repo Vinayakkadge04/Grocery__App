@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image ,ActivityIndicator} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { URL } from "../utils/constants";
 import { useSelector } from "react-redux";
@@ -10,28 +10,34 @@ export default function MyOrder({ navigation }) {
     const { token } = useSelector((state) => state.auth)
     const imgurl = URL + '/';
     const [show, setShow] = useState()
-
+    const [loading , setloading] = useState(false)
     // ********* API for getting Order ******************
     const [data, setData] = useState([]);
 
     const GetOrders = async () => {
         try {
+            setloading(true)
             const url = URL + '/orders/all';
             let result = await fetch(url,
                 {
                     method: 'GET',
-                    headers: {
+                    headers: 
+                    {
                         Authorization: `Bearer ${token}`,
                     }
                 }
             );
+            if(!result.ok) 
+                setloading(false)
+                throw new Error(await result.json())
             result = await result.json();
             setData(result);
 
         }
         catch (error) {
-            console.log(JSON.stringify(error, null, 2));
-            console.log(error?.response?.data?.message || error.message);
+            setloading(false)
+            console.log(JSON.stringify(error, null, 2), 'in error');
+            console.log(error?.response?.data?.message || error.message, 'in error');
         }
     }
 

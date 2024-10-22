@@ -8,7 +8,7 @@ import { URL } from "../utils/constants";
 export default function HomeScreen({ navigation }) {
     
     const {token ,isLoggedIn , info}  = useSelector((state) => state.auth) 
-    
+   
     const imgurl = URL+'/';
     const [catdata, setcatData] = useState([]);
     const GetCategoty = async () => {
@@ -72,7 +72,7 @@ export default function HomeScreen({ navigation }) {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ gap: 10, marginVertical: 10, paddingVertical: 10 }}>
-                <Text style={{fontSize:24, fontWeight:'600'}}>Hello {info.customerName} !</Text>
+                <Text style={{fontSize:24, fontWeight:'600'}}>Hello {info.customerName}!</Text>
                 {/* <View style={[style.container, { justifyContent: 'space-between', padding: 20, borderRadius: 8, backgroundColor: "#e6e6f0" }]}>
                     <View style={[style.container]}>
                         <Ionicons style={style.icon} name="search" />
@@ -153,16 +153,17 @@ export default function HomeScreen({ navigation }) {
                                 {
                                     return (
                                         <View key={index} style={style.productContainer}>
+                                            <TouchableOpacity onPress={() => navigation.navigate('describe', { id: item.productId })}>
                                             <View style={style.productcontent}>
                                                 <Image style={style.productImage} source={{ uri: imgurl + item.images }} />
                                                 <Text style={style.price}>{item.price}</Text>
                                                 <Text style={style.producttitle}>{item.title}</Text>
                                                 <Text style={style.quantity}>{item.stockAtPresent + " " + item.unit}</Text>
                                             </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' ,justifyContent:'center'}}>
                                                 <View style={style.horizontalline} />
                                             </View>
-                                            <TouchableOpacity onPress={() => navigation.navigate('describe', { id: item.productId })}>
+                                            
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, gap: 5 }}>
                                                     <MaterialCommunityIcons name="shopping-outline" color={'#6CC51D'} size={20} />
                                                     <Text>Add to cart</Text>
@@ -291,7 +292,7 @@ const style = StyleSheet.create(
             marginVertical: 10,
             height:90,
             width:90,
-            resizeMode:'streach'
+            resizeMode:'contain'
         }
     }
 )

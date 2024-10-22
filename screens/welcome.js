@@ -30,14 +30,14 @@ export default function Welcome({ navigation }) {
           </View>
           <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
           <View style={style.butn}>
-            <Text style={{color:'white', fontSize:18,fontWeight:'600'}}>Create An Account</Text>
+            <Text style={{color:'white', fontSize:18,fontWeight:'600'}}>Continue with Email</Text>
           </View>
           </TouchableOpacity>
           
           <View style={style.richtext}>
+            <TouchableOpacity style={style.richtext} onPress={()=>navigation.navigate('Login')}>
             <Text style={{color:'grey',fontSize:18}}>Already have an account ? </Text>
-            <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
-                 <Text style={{fontSize:18,fontWeight:'600'}}>Login</Text>
+            <Text style={{fontSize:18,fontWeight:'600'}}>Login</Text>
             </TouchableOpacity>
            
           </View>

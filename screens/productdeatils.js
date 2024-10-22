@@ -12,9 +12,9 @@ export default function Description(props) {
     const [counter, setcounter] = useState(1);
     const [selectedRadio, setselectedRadio] = useState();
     const pId = props.route.params.id;
-    console.log(pId)
     const [data, setData] = useState([]);
     const [vardata, setvardata] = useState([]);
+    const [selectweight , setselectweight] = useState();
     imgurl = URL +'/'
     const GetProducts = async () => {
         const url = URL + `/products/edit/${pId}`;
@@ -80,7 +80,7 @@ export default function Description(props) {
                                     </View>
 
                                     <Text style={style.producttitle}>{data.title}</Text>
-                                    {/* <Text style={style.quantity}>{data.stockAtPresent + " " + data.unit}</Text> */}
+                                    <Text style={style.quantity}>Available Stock: {data.stockAtPresent + " " + data.unit}</Text>
                                     <View style={style.review}>
                                         <Text style={style.reviewcount}>4.5</Text>
                                         <Image source={require('../assets/review.png')} />
@@ -94,8 +94,8 @@ export default function Description(props) {
                                                 return (
                                                     <TouchableOpacity onPress={
                                                         () => { 
-                                                            setselectedRadio(item1.variationId) 
-                                                            
+                                                            setselectedRadio(item1.variationId)
+                                                            setselectweight(item1.weightOption)
                                                         }}>
                                                         <View key={index} style={style.variation}>
                                                             <View style={style.radio}>
@@ -109,8 +109,9 @@ export default function Description(props) {
                                                             </View>
                                                             <Ionicons style={{ fontSize: 18, color: 'black', }} name="arrow-redo" />
                                                             <View style={style.varprice}>
+                                                               
+                                                                <Text>Rs </Text>
                                                                 <Text>{item1.price}</Text>
-                                                                <Text> Rs</Text>
                                                             </View>
                                                         </View>
                                                     </TouchableOpacity>
@@ -127,7 +128,7 @@ export default function Description(props) {
                                                     if (counter > 0) {
                                                         setcounter(counter - 1)
                                                     } else {
-                                                        Alert.alert("Count can not be in Negative")
+                                                        Alert.alert("Quantity can not be in Negative")
                                                     }
                                                 }}>
                                                 <MaterialCommunityIcons style={{ color: '#6CC51D', fontSize: 24 }} name='minus' />
@@ -135,16 +136,24 @@ export default function Description(props) {
                                             <View style={style.verticleLine}></View>
                                             <Text>{counter}</Text>
                                             <View style={style.verticleLine}></View>
-                                            <TouchableOpacity onPress={() => { setcounter(counter + 1) }}>
+                                            <TouchableOpacity 
+                                            onPress={() => { 
+                                               
+                                                if((selectweight * counter)<data.stockAtPresent){
+                                                    setcounter(counter + 1) 
+                                                }
+                                                else{
+                                                    Alert.alert("We Dont have That much quantity");
+                                                }
+
+                                                }}>
                                                 <MaterialCommunityIcons style={{ color: '#6CC51D', fontSize: 24 }} name='plus' />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
                                     <TouchableOpacity onPress={
                                         async () => {
-                                            console.log(selectedRadio)
-                                            console.log(pId)
-                                            console.log(counter)
+                                          
                                             try {
                                                 var r = (Math.random() + 1).toString(5);
                                                 const url = URL + '/cart/insert';

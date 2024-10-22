@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, ScrollView, Image, SafeAreaView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { URL } from "../utils/constants";
@@ -9,9 +9,7 @@ const imgurl = URL+'/'
 export default function Vegetables(props) {
 
     const { token } = useSelector((state) => state.auth)
-   
     const categoryId = props.route.params.id;
-    
     const [data, setData] = useState([]);
     const GetProducts = async () => {
 
@@ -45,6 +43,7 @@ export default function Vegetables(props) {
 
 
     return (
+        <SafeAreaView>
         <View>
             <View style={style.header}>
                 <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -54,7 +53,7 @@ export default function Vegetables(props) {
                 <Text style={style.headertitle}>{props.route.params.title}</Text>
                 <Ionicons style={{ fontSize: 34, color: 'black' }} name="options-sharp" />
             </View>
-            <ScrollView>
+            <ScrollView> 
                 <View style={style.container1}>
                     <View>
                         <View style={style.container}>
@@ -65,6 +64,7 @@ export default function Vegetables(props) {
                                         
                                         return (
                                             <View key={index} style={style.productContainer}>
+                                                 <TouchableOpacity onPress={() => props.navigation.navigate('describe', { id: item.productId })}>
                                                 <View style={style.productcontent}>
                                                     
                                                 <Image
@@ -77,8 +77,8 @@ export default function Vegetables(props) {
                                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                     <View style={style.horizontalline} />
                                                 </View>
-                                                <TouchableOpacity onPress={() => props.navigation.navigate('describe', { id: item.productId })}>
-                                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, gap: 5 }}>
+                                               
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, gap: 5, justifyContent:'center',}}>
                                                         <MaterialCommunityIcons name="shopping-outline" color={'#6CC51D'} size={20} />
                                                         <Text>Add to cart</Text>
                                                     </View>
@@ -98,6 +98,7 @@ export default function Vegetables(props) {
             </ScrollView>
 
         </View>
+        </SafeAreaView>
     )
 }
 
