@@ -8,12 +8,12 @@ import { URL } from "../utils/constants";
 export default function HomeScreen({ navigation }) {
     
     const {token ,isLoggedIn , info}  = useSelector((state) => state.auth) 
-   
+   console.log("TOKEN" ,token);
+   console.log("INFO",info)
     const imgurl = URL+'/';
     const [catdata, setcatData] = useState([]);
     const GetCategoty = async () => {
-        console.log(isLoggedIn);
-        console.log(info);
+        
         try {
             const url = URL + '/categories';
             let result = await fetch(url,
@@ -26,7 +26,7 @@ export default function HomeScreen({ navigation }) {
             );
             if(result.status === 200){
                 result = await result.json();
-                console.log(result.data)
+               
                 setcatData(result);
             }else{
                 Alert.alert(message="Error getting Category Data...")
@@ -150,12 +150,14 @@ export default function HomeScreen({ navigation }) {
                         <View style={style.container}>
                             { 
                             Array.isArray(data) && data.map((item, index) =>
+
                                 {
+                                 
                                     return (
                                         <View key={index} style={style.productContainer}>
                                             <TouchableOpacity onPress={() => navigation.navigate('describe', { id: item.productId })}>
                                             <View style={style.productcontent}>
-                                                <Image style={style.productImage} source={{ uri: imgurl + item.images }} />
+                                                <Image style={style.productImage} source={ item.images ? { uri: imgurl + item.images } : require("../assets/organic.jpeg")} />
                                                 <Text style={style.price}>{item.price}</Text>
                                                 <Text style={style.producttitle}>{item.title}</Text>
                                                 <Text style={style.quantity}>{item.stockAtPresent + " " + item.unit}</Text>
@@ -164,7 +166,7 @@ export default function HomeScreen({ navigation }) {
                                                 <View style={style.horizontalline} />
                                             </View>
                                             
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, gap: 5 }}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, gap: 5 ,justifyContent:'center'}}>
                                                     <MaterialCommunityIcons name="shopping-outline" color={'#6CC51D'} size={20} />
                                                     <Text>Add to cart</Text>
                                                 </View>

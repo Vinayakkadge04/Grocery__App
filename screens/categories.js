@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from "react-redux";
 import { URL } from "../utils/constants";
@@ -33,6 +33,7 @@ export default function Categories(props) {
     }, []);
 
     return (
+        <SafeAreaView>
         <View>
             <View style={style.header}>
                 <TouchableOpacity onPress={() => props.navigation.navigate('Main')}>
@@ -40,7 +41,8 @@ export default function Categories(props) {
                 </TouchableOpacity>
 
                 <Text style={style.headertitle}>Categories</Text>
-                <Ionicons style={{ fontSize: 34, color: 'black' }} name="options-sharp" />
+                <View></View>
+                {/* <Ionicons style={{ fontSize: 34, color: 'black' }} name="options-sharp" /> */}
             </View>
             <ScrollView vertical>
             <View style={style.container}>
@@ -121,7 +123,7 @@ export default function Categories(props) {
             </View>
             </ScrollView>
         </View>
-
+        </SafeAreaView>
     )
 }
 const style = StyleSheet.create({
@@ -131,7 +133,7 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'white',
         paddingVertical: 30,
-        paddingTop: 60,
+        // paddingTop: 60,
         paddingHorizontal: 18,
         marginBottom: 10
 

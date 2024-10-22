@@ -14,14 +14,14 @@ export default function Description(props) {
     const pId = props.route.params.id;
     const [data, setData] = useState([]);
     const [vardata, setvardata] = useState([]);
-    const [selectweight , setselectweight] = useState();
-    imgurl = URL +'/'
+    const [selectweight, setselectweight] = useState();
+    imgurl = URL + '/'
     const GetProducts = async () => {
         const url = URL + `/products/edit/${pId}`;
         let result = await fetch(url,
             {
                 method: "GET",
-                headers: 
+                headers:
                 {
                     Authorization: `Bearer ${token}`
                 }
@@ -29,7 +29,7 @@ export default function Description(props) {
         );
         result = await result.json();
         setData(result);
-        console.log(imgurl+data.images)
+        console.log(imgurl + data.images)
     }
 
     const GetVarient = async () => {
@@ -63,136 +63,147 @@ export default function Description(props) {
         <View>
             <ScrollView>
                 <SafeAreaView style={{ flex: 1, backgroundColor: '#F2FFE6' }}>
-                            <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                                <Ionicons style={{ fontSize: 34, color: 'black', top: 36, left: 30, zIndex: 5 }} name="arrow-back" />
-                            </TouchableOpacity>
-                            <View style={style.container}>
-                                <View style={style.productbg}>
-                                    <View style={{ alignItems: 'center' }}>
-                                        <Image style={{height:300, width:300,resizeMode :'stretch'}}
-                                            source={{uri : imgurl + data.images}} />
-                                    </View>
-                                </View>
-                                <View style={style.describecontainer}>
-                                    <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                                        <Text style={style.price}>$2.20</Text>
-                                        <Ionicons style={{ color: 'grey', fontSize: 24, marginRight: 10 }} name="heart-outline" />
-                                    </View>
+                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                        <Ionicons style={{ fontSize: 34, color: 'black', top: 36, left: 30, zIndex: 5 }} name="arrow-back" />
+                    </TouchableOpacity>
+                    <View style={style.container}>
+                        <View style={style.productbg}>
+                            <View style={{ alignItems: 'center' }}>
+                                <Image style={{ height: 300, width: 300, resizeMode: 'stretch' }}
+                                    source={{ uri: imgurl + data.images }} />
+                            </View>
+                        </View>
+                        <View style={style.describecontainer}>
+                            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                                <Text style={style.price}></Text>
+                                <Ionicons style={{ color: 'grey', fontSize: 24, marginRight: 10 }} name="heart-outline" />
+                            </View>
 
-                                    <Text style={style.producttitle}>{data.title}</Text>
-                                    <Text style={style.quantity}>Available Stock: {data.stockAtPresent + " " + data.unit}</Text>
-                                    <View style={style.review}>
-                                        <Text style={style.reviewcount}>4.5</Text>
-                                        <Image source={require('../assets/review.png')} />
-                                        <Text style={style.quantity}>(89 reviews)</Text>
-                                    </View>
-                                    <Text style={style.desc}>{data.description}</Text>
+                            <Text style={style.producttitle}>{data.title}</Text>
+                            <Text style={style.quantity}>Available Stock: {data.stockAtPresent + " " + data.unit}</Text>
+                            <View style={style.review}>
+                                <Text style={style.reviewcount}>4.5</Text>
+                                <Image source={require('../assets/review.png')} />
+                                <Text style={style.quantity}>(89 reviews)</Text>
+                            </View>
+                            <Text style={style.desc}>{data.description}</Text>
 
-                                    <View style={style.varcontainer}>
-                                        {
-                                            vardata.map((item1, index) => {
-                                                return (
-                                                    <TouchableOpacity onPress={
-                                                        () => { 
-                                                            setselectedRadio(item1.variationId)
-                                                            setselectweight(item1.weightOption)
-                                                        }}>
-                                                        <View key={index} style={style.variation}>
-                                                            <View style={style.radio}>
-                                                                {
-                                                                    selectedRadio == item1.variationId ? <View style={style.radiobutton}></View> : null
-                                                                }
-                                                            </View>
-                                                            <View style={style.varweight}>
-                                                                <Text>{item1.weightOption}</Text>
-                                                                <Text> {data.unit}</Text>
-                                                            </View>
-                                                            <Ionicons style={{ fontSize: 18, color: 'black', }} name="arrow-redo" />
-                                                            <View style={style.varprice}>
-                                                               
-                                                                <Text>Rs </Text>
-                                                                <Text>{item1.price}</Text>
-                                                            </View>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                )
-                                            })
-                                        }
-
-                                    </View>
-                                    <View style={style.btn1}>
-                                        <Text style={style.quantity}>Quantity</Text>
-                                        <View style={style.quantitycount}>
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    if (counter > 0) {
-                                                        setcounter(counter - 1)
-                                                    } else {
-                                                        Alert.alert("Quantity can not be in Negative")
-                                                    }
+                            <View style={style.varcontainer}>
+                                {
+                                    vardata.map((item1, index) => {
+                                        return (
+                                            <TouchableOpacity onPress={
+                                                () => {
+                                                    setselectedRadio(item1.variationId)
+                                                    setselectweight(item1.weightOption)
                                                 }}>
-                                                <MaterialCommunityIcons style={{ color: '#6CC51D', fontSize: 24 }} name='minus' />
-                                            </TouchableOpacity>
-                                            <View style={style.verticleLine}></View>
-                                            <Text>{counter}</Text>
-                                            <View style={style.verticleLine}></View>
-                                            <TouchableOpacity 
-                                            onPress={() => { 
-                                               
-                                                if((selectweight * counter)<data.stockAtPresent){
-                                                    setcounter(counter + 1) 
-                                                }
-                                                else{
-                                                    Alert.alert("We Dont have That much quantity");
-                                                }
-
-                                                }}>
-                                                <MaterialCommunityIcons style={{ color: '#6CC51D', fontSize: 24 }} name='plus' />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity onPress={
-                                        async () => {
-                                          
-                                            try {
-                                                var r = (Math.random() + 1).toString(5);
-                                                const url = URL + '/cart/insert';
-                                                const result = await axios.post(url,
-                                                    {
-                                                        productId: pId,
-                                                        variationId: selectedRadio,
-                                                        quantity : counter
-                                                    },
-                                                    {
-                                                        headers: 
+                                                <View key={index} style={style.variation}>
+                                                    <View style={style.radio}>
                                                         {
-                                                            Authorization: `Bearer ${token}`
+                                                            selectedRadio == item1.variationId ? <View style={style.radiobutton}></View> : null
                                                         }
-                                                    }
-                                                );
+                                                    </View>
+                                                    <View style={style.varweight}>
+                                                        <Text>{item1.weightOption}</Text>
+                                                        <Text> {data.unit}</Text>
+                                                    </View>
+                                                    <Ionicons style={{ fontSize: 18, color: 'black', }} name="arrow-redo" />
+                                                    <View style={style.varprice}>
 
-                                                if (result.status === 200) {
-                                                    Alert.alert("Product Added in Cart");
-                                                    props.navigation.navigate('cart')
-                                                }
-                                               
+                                                        <Text>Rs </Text>
+                                                        <Text>{item1.price}</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    })
+                                }
 
-                                            } catch (error) 
-                                            {   
-                                                console.log(JSON.stringify(error, null, 2));
-                                                console.log(error?.response?.data?.message || error.message);
-                                                Alert.alert(error.message)
+                            </View>
+                            <View style={style.btn1}>
+                                <Text style={style.quantity}>Quantity</Text>
+                                <View style={style.quantitycount}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (counter > 1) {
+                                                setcounter(counter - 1)
+                                            } else {
+                                                Alert.alert("Quantity can not be less than 1")
                                             }
-                                            
-                                        }
-                                        }>
-                                        <View style={style.butn}>
-                                            <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Add to Cart</Text>
-                                        </View>
+                                        }}>
+                                        <MaterialCommunityIcons style={{ color: '#6CC51D', fontSize: 24 }} name='minus' />
+                                    </TouchableOpacity>
+                                    <View style={style.verticleLine}></View>
+                                    <Text>{counter}</Text>
+                                    <View style={style.verticleLine}></View>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if(selectweight === undefined){
+                                                Alert.alert("Please select weight")
+                                            }else
+
+                                            if ((selectweight * counter) < data.stockAtPresent) {
+                                                setcounter(counter + 1)
+                                            }
+                                            else {
+                                                Alert.alert("We Dont have That much quantity");
+                                            }
+
+                                        }}>
+                                        <MaterialCommunityIcons style={{ color: '#6CC51D', fontSize: 24 }} name='plus' />
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                        </SafeAreaView>
+                            <TouchableOpacity onPress={
+                                async () => {
+                                   
+                                    if (selectedRadio === undefined) {
+                                        Alert.alert("Please Select Weight")
+                                    }
+                                    else {
+
+                                        try {
+
+                                            const url = URL + '/cart/insert';
+                                            const result = await axios.post(url,
+                                                {
+                                                    productId: pId,
+                                                    variationId: selectedRadio,
+                                                    quantity: counter
+                                                },
+                                                {
+                                                    headers:
+                                                    {
+                                                        Authorization: `Bearer ${token}`
+                                                    }
+                                                }
+                                            );
+
+                                            if (result.status === 200) {
+                                                Alert.alert("Product Added in Cart");
+                                                props.navigation.navigate('cart')
+                                            }
+
+
+                                        } catch (error) {
+                                            console.log(JSON.stringify(error, null, 2));
+                                            console.log(error?.response?.data?.message || error.message);
+                                            Alert.alert(error.message)
+                                        }
+
+                                    }
+
+
+
+                                }
+                            }>
+                                <View style={style.butn}>
+                                    <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Add to Cart</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </SafeAreaView>
 
             </ScrollView>
 
@@ -302,42 +313,42 @@ const style = StyleSheet.create(
         },
         varcontainer: {
             flexDirection: 'column',
-            
+
 
         },
         variation: {
             flexDirection: 'row',
-            marginBottom:-15,
-            alignItems:'center'
+            marginBottom: -15,
+            alignItems: 'center'
         },
         varweight: {
-           
+
             padding: 2,
             paddingHorizontal: 8,
-            flexDirection:'row'
+            flexDirection: 'row'
         },
         varprice: {
-            
+
             padding: 2,
             paddingHorizontal: 8,
-            flexDirection:'row'
+            flexDirection: 'row'
         },
-        radio:{
-            height:20,
-            width:20,
-            borderColor:'black',
-            borderWidth:1,
-            borderRadius:10,
-            margin:10
-          },
-        
-          radiobutton:{
-            height:8,
-            width:8,
-            borderRadius:4,
-            backgroundColor:'black',
-            margin:5
-          }
+        radio: {
+            height: 20,
+            width: 20,
+            borderColor: 'black',
+            borderWidth: 1,
+            borderRadius: 10,
+            margin: 10
+        },
+
+        radiobutton: {
+            height: 8,
+            width: 8,
+            borderRadius: 4,
+            backgroundColor: 'black',
+            margin: 5
+        }
     }
 )
 

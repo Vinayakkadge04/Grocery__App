@@ -1,16 +1,15 @@
 import React, { useState }  from "react";
-import {View, Text, StyleSheet , TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, StyleSheet , TouchableOpacity, TextInput , ScrollView} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from "axios";
 import { URL } from "../utils/constants";
 
 
 export default function ForgotPassword(props){
-
     const [email , setemail] = useState(""); 
     const [password, setPassword] = useState("");
     const updatePassword = async() =>{
-            console.log('Hello')
+          
         try {
             const url = URL + "/customer/forgotpassword";
             const result = await axios.put(url, {
@@ -46,18 +45,19 @@ export default function ForgotPassword(props){
                 </TouchableOpacity>  
                 <Text style={style.headertitle}>Password Recovery</Text>
             </View>
-
-            <View style={[style.body,{top:-60}]}>
+            <ScrollView>
+            <View style={[style.body,{top:60}]}>
                     <Text style={style.title}>Forgot Password</Text>
                     <Text style={style.subtitle}>Lorem ipsum dolor sit amet, consetetur {'\n'}sadipscing elitr, sed diam nonumy</Text>
                     <View style={style.textbox}>
                         <Ionicons style={style.icon} name="mail-outline"/>
-                        <TextInput onChangeText={(text) => setemail(text)}
+                        <TextInput style={{ fontSize: 17 ,flex:1}}
+                        onChangeText={(text) => setemail(text)}
                          placeholder="Email Address"/>
                     </View>
                     <View style={style.textbox}>
                         <Ionicons style={style.icon} name="lock-closed-outline"/>
-                        <TextInput
+                        <TextInput style={{ fontSize: 17 ,flex:1}}
                         onChangeText={(text) => setPassword(text)}
                          placeholder="New Password"/>
                     </View>
@@ -69,6 +69,7 @@ export default function ForgotPassword(props){
                         </View>
                     </TouchableOpacity>
             </View>
+            </ScrollView>
        </View>
     );
 }
@@ -126,8 +127,8 @@ const style = StyleSheet.create({
       borderRadius:6,
       alignSelf:'stretch',
       gap:10,
-      width:390,
-      marginLeft:40
+      width:350,
+      marginHorizontal:20
       
     },
     icon:{
@@ -143,6 +144,7 @@ const style = StyleSheet.create({
         shadowOffset:{height:2,width:2},
         shadowOpacity:0.2,
         marginTop:10,
-        width:390
+        alignSelf:'stretch',
+        width:350,
       },
 })

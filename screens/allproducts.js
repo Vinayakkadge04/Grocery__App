@@ -43,7 +43,7 @@ export default function Vegetables(props) {
 
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex:1}}>
         <View>
             <View style={style.header}>
                 <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -51,9 +51,10 @@ export default function Vegetables(props) {
                 </TouchableOpacity>
 
                 <Text style={style.headertitle}>{props.route.params.title}</Text>
-                <Ionicons style={{ fontSize: 34, color: 'black' }} name="options-sharp" />
+                <View></View>
+                {/* <Ionicons style={{ fontSize: 34, color: 'black' }} name="options-sharp" /> */}
             </View>
-            <ScrollView> 
+            <ScrollView style={{marginBottom:120}}> 
                 <View style={style.container1}>
                     <View>
                         <View style={style.container}>
@@ -109,10 +110,8 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'white',
         paddingVertical: 30,
-        paddingTop: 60,
+        // paddingTop: 60,
         paddingHorizontal: 18,
-
-
     },
     headertitle: {
         fontSize: 26,

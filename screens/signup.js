@@ -86,7 +86,7 @@ export default function Signup(props) {
           <View style={[style.textBox, { justifyContent: 'start' }]}>
             <Ionicons name='person-outline' size={25} color={'#868889'} />
             <TextInput onChangeText={(text) => setname(text)}
-              placeholder='Name' style={{ fontSize: 15, marginLeft: 12 }} />
+              placeholder='Name' style={{ fontSize: 15, marginLeft: 12 ,flex:1}} />
           </View>
 
           {/* <Controller
@@ -113,20 +113,20 @@ export default function Signup(props) {
           <View style={[style.textBox, { justifyContent: 'start' }]}>
             <Ionicons name='mail-outline' size={28} color={'#868889'} />
             <TextInput onChangeText={(text) => setemail(text)}
-              placeholder='Email' style={{ fontSize: 15, marginLeft: 12 }} />
+              placeholder='Email' style={{ fontSize: 15, marginLeft: 12,flex:1 }} />
           </View>
 
           <View style={[style.textBox, { justifyContent: 'start' }]}>
             <Ionicons name='call-outline' size={28} color={'#868889'} />
             <TextInput onChangeText={(text) => setphone(text)}
-              placeholder='Phone' style={{ fontSize: 15, marginLeft: 12 }} />
+              placeholder='Phone' style={{ fontSize: 15, marginLeft: 12 ,flex:1}} />
           </View>
 
           <View style={style.textBox}>
             <View style={{ flex: 1, flexDirection: 'row',alignItems:'center' }}>
               <Ionicons name='lock-closed-outline' size={28} color={'#868889'} />
               <TextInput onChangeText={(text) => setpassword(text)}
-                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 15, marginLeft: 12 }} />
+                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 15, marginLeft: 12 ,flex:1}} />
             </View>
             <TouchableOpacity onPress={() => {setSecureText(!secureText)}}>
             <Ionicons name={secureText ? 'eye-off-outline' : 'eye-outline'} size={24} color={'#868889'}/>

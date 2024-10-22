@@ -118,12 +118,12 @@ export default function ShippingAddress({ navigation }) {
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', margin: 20, }}>
 
-                        <Switch
+                        {/* <Switch
                             style={{ transform: [{ scaleX: .8 }, { scaleY: .7 }] }}
                             trackColor={{ false: "#fffff", true: "#6CC51D" }}
                             onValueChange={toggleSwitch}
                             value={isEnabled} />
-                        <Text>Remember me</Text>
+                        <Text>Remember me</Text> */}
                     </View>
 
                 </View>
@@ -211,7 +211,7 @@ const style = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { height: 2, width: 2 },
         shadowOpacity: 0.2,
-        margin: 20
-
+        margin: 20,
+        marginTop:0
     },
 })

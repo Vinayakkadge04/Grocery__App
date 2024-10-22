@@ -83,13 +83,15 @@ export default function ShippingAddress({ navigation }) {
             }
             );
             console.log("StatusCode" , result.status)
-            console.log(result.status === 200)
-            {
+            if(result.status === 200)
+            {       
+                    setisloadding(false)
                     createOrder();
             }
         }
        
         catch (error) {
+        
             setisloadding(false)
             console.log("Error to Update Customer", error);
         }
@@ -127,16 +129,18 @@ export default function ShippingAddress({ navigation }) {
             );
 
             if (result?.status === 200) {
-                setisloadding(false)
+               
              await OpenRazerpay(result.data);
             }
             else {
-                setisloadding(false)
+               
                 Alert.alert("Order Not Created...Try Again")
             }
 
-
-        } catch (error) {
+            setisloadding(false)
+        } 
+        
+        catch (error) {
 
             console.log(JSON.stringify(error, null, 2), error);
             console.log(error?.response?.data?.message || error.message, error);
@@ -184,6 +188,8 @@ export default function ShippingAddress({ navigation }) {
 
     const VerifyPayment = async (paymentData) => {
         try {
+            setisloadding(true)
+            console.log("Is Loading", setisloadding)
             const url = URL + '/verify-payment'
             const result = await axios.post(url, {
                 razorpay_order_id: paymentData.razorpay_order_id,
@@ -199,13 +205,16 @@ export default function ShippingAddress({ navigation }) {
                 }
 
             );
-            console.log("RESULT STATUS:", result.status);
+           
             if (result.status === 200) {
                 Alert.alert("Payment Verified...!");
                 navigation.navigate('ordersuccess')
             }
+            setisloadding(false)
         }
+
         catch (error) {
+            setisloadding(false)
             console.log(JSON.stringify(error, null, 2), error);
             console.log(error?.response?.data?.message || error.message, error);
             Alert.alert("Payment Verification Failed..Please Try Again🙏"
@@ -307,23 +316,27 @@ export default function ShippingAddress({ navigation }) {
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', margin: 20, }}>
-                        <Switch
+                        {/* <Switch
                             style={{ transform: [{ scaleX: .8 }, { scaleY: .7 }] }}
                             trackColor={{ false: "#fffff", true: "#6CC51D" }}
                             onValueChange={toggleSwitch}
                             value={isEnabled} />
-                        <Text>Remember me</Text>
+                        <Text>Remember me</Text> */}
                     </View>
 
-                    <TouchableOpacity onPress={() => {
-                        // UpdateData();
-                       checkAddress();
-
-                    }}>
-                        <View style={style.butn}>
-                            <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Next</Text>
-                        </View>
-                    </TouchableOpacity>
+                    {
+                        isloadding ?
+                        <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />:
+                        <TouchableOpacity onPress={() => {
+                            // UpdateData();
+                           checkAddress();
+    
+                        }}>
+                            <View style={style.butn}>
+                                <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Next</Text>
+                            </View>
+                        </TouchableOpacity>
+                    }
                 </ScrollView>
             </ScrollView>
         </View>

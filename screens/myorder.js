@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image ,ActivityIndicator} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image ,ActivityIndicator, SafeAreaView , Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { URL } from "../utils/constants";
 import { useSelector } from "react-redux";
@@ -13,11 +13,12 @@ export default function MyOrder({ navigation }) {
     const [loading , setloading] = useState(false)
     // ********* API for getting Order ******************
     const [data, setData] = useState([]);
-
     const GetOrders = async () => {
+
         try {
             setloading(true)
             const url = URL + '/orders/all';
+           
             let result = await fetch(url,
                 {
                     method: 'GET',
@@ -27,17 +28,23 @@ export default function MyOrder({ navigation }) {
                     }
                 }
             );
-            if(!result.ok) 
-                setloading(false)
-                throw new Error(await result.json())
-            result = await result.json();
-            setData(result);
 
+            // if(!result.ok) 
+            //     setloading(false)
+            //     throw new Error(await result.json())
+            if(result){
+                setloading(false)
+                result = await result.json();
+                setData(result);
+
+            }
+            
         }
         catch (error) {
             setloading(false)
             console.log(JSON.stringify(error, null, 2), 'in error');
             console.log(error?.response?.data?.message || error.message, 'in error');
+            Alert.alert(error)
         }
     }
 
@@ -46,10 +53,10 @@ export default function MyOrder({ navigation }) {
 
     const RemoveOrders = async (id) => {
         try {
+            console.log("ID",id)
             const url = URL + `/orders/delete/${id}`;
             let result = await fetch(url,
                 {
-                    method: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -65,100 +72,112 @@ export default function MyOrder({ navigation }) {
         }
         GetOrders();
     }
+
     useEffect(() => {
         GetOrders();
+
     }, []);
 
 
     return (
-        <ScrollView>
-            <View>
+            <SafeAreaView style={{flex:1}}>
+                  
+                  <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
                 <View style={style.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Ionicons style={{ fontSize: 34, color: 'black', right: 80 }} name="arrow-back" />
                     </TouchableOpacity>
                     <Text style={style.headertitle}>My Order</Text>
                 </View>
+               
+                    {
+                        loading ?
+                        <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 40 }} />
+                         : <View style={style.cardsection}>
+                         {
+                             data.length ?
+                                 data.map((item, index) => {
+                                    
+                                     return (
+                                        
+                                         <View>
+                                             <View key={index} style={style.card}>
+ 
+                                                 <View style={style.cardleft}>
+                                                     <View style={style.cardbtm1}>
+                                                         <Text style={style.title}>Order ID:{item.orderId}</Text>
+                                                         {/* <TouchableOpacity onPress={() => {
+                                                             console.log("Delete")
+                                                             RemoveOrders(item.orderId)
+                                                         }
+                                                         }>
+                                                             <Ionicons name="trash-sharp" color='red' size={22} />
+                                                         </TouchableOpacity> */}
+                                                     </View>
+ 
+                                                     <View style={style.cardbtm}>
+                                                         <Text>Status: {item.orderStatus}</Text>
+                                                         <View>
+                                                             <Text style={style.subtitle}>Placed on: {item.orderDate.split('T')[0]}</Text>
+                                                             <Text style={style.subtitle}>Total Price: {item.totalPrice} </Text>
+                                                         </View>
+ 
+                                                     </View>
+                                                     <TouchableOpacity onPress={() => {
+                                                         setShow(item.orderId);
+                                                         console.log(item.orderId);
+                                                     }}>
+                                                         <View style={style.btn}>
+                                                             <Text>Show Products</Text>
+                                                         </View>
+                                                     </TouchableOpacity>
+                                                 </View>
+                                             </View>
+                                             {
+                                                show === item.orderId ?
+                                                     item.products.map((productitem, index) => {
+                                                     
+                                                         return (
+                                                             <View>
+                                                                 <View key={index} style={style.productcontainer}>
+                                                                     <View style={style.leftcontent}>
+                                                                         <View style={style.imagebg}>
+                                                                             <Image style={{ height: 65, width: 65, resizeMode: 'stretch' }} source={{ uri: imgurl + productitem.images }} />
+                                                                         </View>
+                                                                         <View>
+                                                                             <Text style={style.price}>{productitem.totalPrice}</Text>
+                                                                             <Text style={style.producttitle}>{productitem.title}</Text>
+ 
+                                                                         </View>
+                                                                     </View>
+                                                                     <View>
+ 
+                                                                     </View>
+                                                                     <View style={style.rightcontent}>
+                                                                         <View>
+                                                                             <Text style={style.count}></Text>
+                                                                         </View>
+ 
+                                                                     </View>
+                                                                 </View>
+                                                             </View>
+                                                         )
+                                                     }) : null
+                                             }
+ 
+                                         </View>
+                                     )
+                                 }
+                                 ) : null
+                         }
+                     </View>
+                    }
+                   
+           
+                </ScrollView>
 
-                <View>
-                    <View style={style.cardsection}>
-                        {
-                            data.length ?
-                                data.map((item, index) => {
-
-                                    return (
-                                        <View>
-                                            <View key={index} style={style.card}>
-
-                                                <View style={style.cardleft}>
-                                                    <View style={style.cardbtm1}>
-                                                        <Text style={style.title}>Order ID:{item.orderId}</Text>
-                                                        {/* <TouchableOpacity onPress={() => {
-                                                            console.log("Delete")
-                                                            RemoveOrders(item.orderId)
-                                                        }
-                                                        }>
-                                                            <Ionicons name="trash-sharp" color='red' size={22} />
-                                                        </TouchableOpacity> */}
-                                                    </View>
-
-                                                    <View style={style.cardbtm}>
-                                                        <Text>Status: {item.orderStatus}</Text>
-                                                        <View>
-                                                            <Text style={style.subtitle}>Placed on: {item.orderDate.split('T')[0]}</Text>
-                                                            <Text style={style.subtitle}>Total Price: {item.totalPrice} </Text>
-                                                        </View>
-
-                                                    </View>
-                                                    <TouchableOpacity onPress={() => {
-                                                        setShow(item.orderId);
-                                                    }}>
-                                                        <View style={style.btn}>
-                                                            <Text>Show Products</Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-                                            {
-                                               show === item.orderId ?
-                                                    item.products.map((productitem, index) => {
-                                                        return (
-                                                            <View>
-                                                                <View key={index} style={style.productcontainer}>
-                                                                    <View style={style.leftcontent}>
-                                                                        <View style={style.imagebg}>
-                                                                            <Image style={{ height: 65, width: 65, resizeMode: 'stretch' }} source={{ uri: imgurl + productitem.images }} />
-                                                                        </View>
-                                                                        <View>
-                                                                            <Text style={style.price}>{productitem.totalPrice}</Text>
-                                                                            <Text style={style.producttitle}>{productitem.title}</Text>
-
-                                                                        </View>
-                                                                    </View>
-                                                                    <View>
-
-                                                                    </View>
-                                                                    <View style={style.rightcontent}>
-                                                                        <View>
-                                                                            <Text style={style.count}></Text>
-                                                                        </View>
-
-                                                                    </View>
-                                                                </View>
-                                                            </View>
-                                                        )
-                                                    }) : null
-                                            }
-
-                                        </View>
-                                    )
-                                }
-                                ) : null
-                        }
-                    </View>
-                </View>
-            </View>
-        </ScrollView>
+       
+            </SafeAreaView>
     )
 }
 
@@ -234,7 +253,7 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'white',
         marginVertical: 10,
-
+        height:120
     },
     leftcontent: {
         padding: 20,

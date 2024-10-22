@@ -49,7 +49,7 @@ export default function Profile(props) {
                 </TouchableOpacity>
 
 
-                <TouchableOpacity onPress={() => props.navigation.navigate('fevourite')}>
+                {/* <TouchableOpacity onPress={() => props.navigation.navigate('fevourite')}>
                     <View style={style.row}>
                         <View style={style.left}>
                             <Ionicons size={28} style={style.icon} name='heart-outline' />
@@ -99,7 +99,7 @@ export default function Profile(props) {
                         </View>
                         <Ionicons style={style.foricon} name="chevron-forward" />
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
 
                 <View style={style.row}>

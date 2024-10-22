@@ -42,7 +42,7 @@ export default function LoginScreen(props) {
       
       
       if (result.status === 200) {
-        Alert.alert("Login Successful")
+    
         console.log(result.data.token)
         console.log(result.data.customer)
         dispatch(login({token:result.data.token,info:result.data.customer}));
@@ -52,8 +52,8 @@ export default function LoginScreen(props) {
     } catch (error) {
       setisloadding(false)
       Alert.alert("Login failed")
-      console.log(JSON.stringify(error, null,2));
-      console.log(error?.response?.data?.message || error.message);
+      console.log(JSON.stringify(error, null,2,"Erron In1"));
+      console.log(error?.response?.data?.message || error.message,"error In 2");
     }
   }
 
@@ -87,7 +87,7 @@ export default function LoginScreen(props) {
             <View style={[style.textBox, { justifyContent: 'start' }]}>
               <Ionicons name='mail-outline' size={28} color={'#868889'} />
               <TextInput onChangeText={(text) => setemail(text)}
-                placeholder='Email Address' style={{ fontSize: 15, marginLeft: 12 }}/>
+                placeholder='Email Address' style={{ fontSize: 17, marginLeft: 12 ,flex:1}}/>
             </View>
             {
               emailError ? <Text style={style.errormsg}>Enter your email</Text> : null
@@ -97,7 +97,7 @@ export default function LoginScreen(props) {
             <View style={{ flex: 1, flexDirection: 'row' ,alignItems:'center'}}>
               <Ionicons name='lock-closed-outline' size={28} color={'#868889'} />
               <TextInput onChangeText={(text) => setpassword(text)}
-                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 15, marginLeft: 12 }} />
+                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 17, marginLeft: 12 , flex:1}} />
             </View>
             <TouchableOpacity onPress={() => {setSecureText(!secureText)}}>
             <Ionicons name={secureText ? 'eye-off-outline' : 'eye-outline'} size={24} color={'#868889'}/>
@@ -109,12 +109,12 @@ export default function LoginScreen(props) {
           }
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20 }}>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-              <Switch
+              {/* <Switch
                 style={{ transform: [{ scaleX: .8 }, { scaleY: .7 }] }}
                 trackColor={{ false: "#fffff", true: "#6CC51D" }}
                 onValueChange={toggleSwitch}
                 value={isEnabled} />
-              <Text>Remember me</Text>
+              <Text>Remember me</Text> */}
             </View>
             <TouchableOpacity onPress={() => props.navigation.navigate('forgot')}>
               <Text style={{ color: '#407EC7' }}>Forgot Password</Text>
@@ -185,7 +185,8 @@ const style = StyleSheet.create({
   bottomcontainer: {
     backgroundColor: '#F4F5F9',
     padding: 20,
-    borderRadius: 12
+    borderTopLeftRadius:12,
+    borderTopRightRadius:12
   },
   title: {
     fontSize: 25,

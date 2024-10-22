@@ -25,9 +25,9 @@ export default function Welcome({ navigation }) {
             <Text style={[style.para , {paddingBottom:20}]}>Lorem ipsum dolor sit amet, consetetur
               sadipscing elitr, sed diam nonumy</Text>
           </View>
-          <View style={style.textBox}>
+          {/* <View style={style.textBox}>
             <Text style={{color:'black', fontSize:18,fontWeight:'600'}}>Continue with google</Text>
-          </View>
+          </View> */}
           <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
           <View style={style.butn}>
             <Text style={{color:'white', fontSize:18,fontWeight:'600'}}>Continue with Email</Text>
