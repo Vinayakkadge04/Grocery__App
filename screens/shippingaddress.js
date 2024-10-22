@@ -1,9 +1,11 @@
 import React, { useState , useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView ,Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from "axios";
 import { URL } from "../utils/constants";
 import { useSelector } from "react-redux";
+import RazorpayCheckout from 'react-native-razorpay';
+
 export default function ShippingAddress({ navigation }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
@@ -16,40 +18,174 @@ export default function ShippingAddress({ navigation }) {
     const [zip, setZip] = useState('');
     const [city, setCity] = useState('');
     const [country, setCountry] = useState('');
+    const [orderData, setOrderData] = useState({});
+    const [paymentData, setpaymentData] = useState({});
+   
+    // const UpdateData = async () => {
+    //     try {
+    //         const url = URL+`customer/update/${info.customerId}`;
+    //         console.log(url);
+    //         const formData = new FormData();
+    //         formData.append("customerName", Name);
+    //         formData.append("customerEmail", email);
+    //         formData.append("customerPhone", phone);
+    //         formData.append("customerAddress", address);
+    //         formData.append("customerZipCode", zip);
+    //         formData.append("customerCity", city);
+    //         formData.append("customerCountry", country);
 
-
-    console.log(info.customerId);
-    const UpdateData = async () => {
-        try {
-            const url = URL+`/customer/update/${info.customerId}`;
-            const formData = new FormData();
-            formData.append("customerName", Name);
-            formData.append("customerEmail", email);
-            formData.append("customerPhone", phone);
-            formData.append("customerAddress", address);
-            formData.append("customerZipCode", zip);
-            formData.append("customerCity", city);
-            formData.append("customerCountry", country);
-
-            const result = await axios.post(url, formData, {
-                headers: {
-                     Authorization : `Bearer ${token}`
-                },
-            },
+    //         const result = await axios.post(url, formData, {
+    //             headers: {
+    //                  Authorization : `Bearer ${token}`
+    //             },
+    //         },
             
-        );
-            if (result.status === 200) {
-                console.log("Hello");
-                Alert.alert("User Data Updated Successfully");
+    //     );
+    //         if (result.status === 200) {
+    //             console.log("Hello");
+    //             Alert.alert("User Data Updated Successfully");
 
+    //         }
+    //     } catch (error) {
+    //         Alert.alert("User Data Not Updated")
+    //         console.log(JSON.stringify(error, null, 2));
+    //         console.log(error?.response?.data?.message || error.message);
+    //     }
+    // }
+
+
+
+
+    const createOrder = async () => {
+        try {
+
+            const url = URL + '/create-order';
+            const result = await axios.post(url, {},
+                {
+                    headers:
+                    {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (result?.status === 200) {
+                setOrderData(result?.data);
+                console.log("Order" ,orderData)
+                console.log("Result " ,result.data);
+                Alert.alert("Press OK to Proceed for Payment...","",
+                [
+                    {
+                        text:"OK",
+                        onPress: async() => 
+                            {   console.log("Hello");
+                                if (orderData){
+                                   await OpenRazerpay();
+                                }
+                                else{
+                                    Alert.alert("Order Not Created...Try Again")
+                                }
+                            }
+                    }
+                ]
+                );
+                
             }
+            else{
+                Alert.alert("Order Not Created...Try Again")
+            }
+
         } catch (error) {
-            Alert.alert("User Data Not Updated")
-            console.log(JSON.stringify(error, null, 2));
-            console.log(error?.response?.data?.message || error.message);
+
+            console.log(JSON.stringify(error, null, 2),error);
+            console.log(error?.response?.data?.message || error.message,error);
+            Alert.alert("Network Problem , Please Try Again");
         }
     }
 
+    const OpenRazerpay = () => {
+       
+        var options = {
+            description: 'Credits towards consultation',
+            image: 'https://t4.ftcdn.net/jpg/02/67/29/93/360_F_267299376_Rwmrov0JGO5savkHry0J2ySMhlDd5bJN.jpg',
+            currency: 'INR',
+            key: 'rzp_test_9xmjkpHzMu3whL',
+            amount: `${orderData?.amount}`,
+            name: 'Grocery Store',
+            order_id: `${orderData?.id}`,
+            prefill: {
+                email: 'kadgevinayak04@gmail.com',
+                contact: '8806204889',
+                name: 'Vinayak Kadge'
+            },
+            theme: { color: '#53a20e' }
+        }
+            RazorpayCheckout.open(options).then((data) => {
+            // handle success
+
+            setpaymentData(data);
+            console.log("DATA: ",data);
+            Alert.alert("Payment Success","",
+                [
+                    {
+                        text:"OK",
+                        onPress:()=>{
+                            if(paymentData){
+                                VerifyPayment();
+                            }
+                            else {
+                                Alert.alert("Payment Verification Not Proceed...Internal Server Error, Please Try Again");
+                                
+                            }
+                        }
+                    }
+                ]
+            )
+            
+            
+            
+        }).catch((error) => {
+            // handle failure
+            alert(`Error: ${error.code} | ${error.description}`);
+        });
+    }
+
+    const VerifyPayment = async () => {
+        try {
+           
+            const url = URL + '/verify-payment'
+            const result = await axios.post(url, {
+                razorpay_order_id: paymentData.razorpay_order_id,
+                razorpay_payment_id: paymentData.razorpay_payment_id,
+                razorpay_signature: paymentData.razorpay_signature
+
+            },
+                {
+                    headers:
+                    {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+
+            );
+            console.log("RESULT STATUS:" ,result.status);
+            if (result.status === 200) {
+                Alert.alert("Payment Verified...!");
+                navigation.navigate('ordersuccess')
+            }
+        }
+        catch (error) {
+            console.log(JSON.stringify(error, null, 2),error);
+            console.log(error?.response?.data?.message || error.message,error);
+            Alert.alert("Payment Verification Failed..Please Try Again🙏"
+            )
+        }
+
+        if (result) {
+            navigation.navigate('ordersuccess');
+        }
+
+    }
    
 
     useEffect(() => {
@@ -150,7 +286,9 @@ export default function ShippingAddress({ navigation }) {
                 </View>
 
                 <TouchableOpacity onPress={() => { 
-                    UpdateData();
+                    // UpdateData();
+                    createOrder();
+                    
                     }}>
                     <View style={style.butn}>
                         <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Next</Text>

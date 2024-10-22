@@ -7,12 +7,12 @@ import RazorpayCheckout from 'react-native-razorpay';
 import axios from "axios";
 export default function Cart({ navigation }) {
     const imgurl = URL + '/';
-    const { token } = useSelector((state) => state.auth)
+    const { token , info} = useSelector((state) => state.auth)
     const [cartProduct, setcartProduct] = useState([])
     const [orderData, setOrderData] = useState({});
     const [total, setTotal] = useState();
     const [paymentData, setpaymentData] = useState({});
-    console.log("Hi");
+    console.log(info);
     const GetCart = async () => {
         try {
 
@@ -29,7 +29,6 @@ export default function Cart({ navigation }) {
 
             result = await result.json();
             if (result) {
-
                 setcartProduct(result.products);
                 setTotal(result.finalTotalPrice);
             }
@@ -65,137 +64,138 @@ export default function Cart({ navigation }) {
         GetCart();
     }
 
+    
+    
+    // const createOrder = async () => {
+    //     try {
 
-    const createOrder = async () => {
-        try {
+    //         const url = URL + '/create-order';
+    //         const result = await axios.post(url, {},
+    //             {
+    //                 headers:
+    //                 {
+    //                     Authorization: `Bearer ${token}`
+    //                 }
+    //             }
+    //         );
 
-            const url = URL + '/create-order';
-            const result = await axios.post(url, {},
-                {
-                    headers:
-                    {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            if (result?.status === 200) {
-                setOrderData(result?.data);
-                console.log("Order" ,orderData)
-                console.log("Result " ,result.data);
-                Alert.alert("Press OK to Proceed for Payment...","",
-                [
-                    {
-                        text:"OK",
-                        onPress: async() => 
-                            {   console.log("Hello");
-                                if (orderData){
-                                   await OpenRazerpay();
-                                }
-                                else{
-                                    Alert.alert("Order Not Created...Try Again")
-                                }
-                            }
-                    }
-                ]
-                );
+    //         if (result?.status === 200) {
+    //             setOrderData(result?.data);
+    //             console.log("Order" ,orderData)
+    //             console.log("Result " ,result.data);
+    //             Alert.alert("Press OK to Proceed for Payment...","",
+    //             [
+    //                 {
+    //                     text:"OK",
+    //                     onPress: async() => 
+    //                         {   console.log("Hello");
+    //                             if (orderData){
+    //                                await OpenRazerpay();
+    //                             }
+    //                             else{
+    //                                 Alert.alert("Order Not Created...Try Again")
+    //                             }
+    //                         }
+    //                 }
+    //             ]
+    //             );
                 
-            }
-            else{
-                Alert.alert("Order Not Created...Try Again")
-            }
+    //         }
+    //         else{
+    //             Alert.alert("Order Not Created...Try Again")
+    //         }
 
-        } catch (error) {
+    //     } catch (error) {
 
-            console.log(JSON.stringify(error, null, 2),error);
-            console.log(error?.response?.data?.message || error.message,error);
-            Alert.alert("Network Problem , Please Try Again");
-        }
-    }
+    //         console.log(JSON.stringify(error, null, 2),error);
+    //         console.log(error?.response?.data?.message || error.message,error);
+    //         Alert.alert("Network Problem , Please Try Again");
+    //     }
+    // }
 
-    const OpenRazerpay = () => {
+    // const OpenRazerpay = () => {
        
-        var options = {
-            description: 'Credits towards consultation',
-            image: 'https://t4.ftcdn.net/jpg/02/67/29/93/360_F_267299376_Rwmrov0JGO5savkHry0J2ySMhlDd5bJN.jpg',
-            currency: 'INR',
-            key: 'rzp_test_9xmjkpHzMu3whL',
-            amount: `${orderData?.amount}`,
-            name: 'Grocery Store',
-            order_id: `${orderData?.id}`,
-            prefill: {
-                email: 'kadgevinayak04@gmail.com',
-                contact: '8806204889',
-                name: 'Vinayak Kadge'
-            },
-            theme: { color: '#53a20e' }
-        }
-            RazorpayCheckout.open(options).then((data) => {
-            // handle success
+    //     var options = {
+    //         description: 'Credits towards consultation',
+    //         image: 'https://t4.ftcdn.net/jpg/02/67/29/93/360_F_267299376_Rwmrov0JGO5savkHry0J2ySMhlDd5bJN.jpg',
+    //         currency: 'INR',
+    //         key: 'rzp_test_9xmjkpHzMu3whL',
+    //         amount: `${orderData?.amount}`,
+    //         name: 'Grocery Store',
+    //         order_id: `${orderData?.id}`,
+    //         prefill: {
+    //             email: 'kadgevinayak04@gmail.com',
+    //             contact: '8806204889',
+    //             name: 'Vinayak Kadge'
+    //         },
+    //         theme: { color: '#53a20e' }
+    //     }
+    //         RazorpayCheckout.open(options).then((data) => {
+    //         // handle success
 
-            setpaymentData(data);
-            console.log("DATA: ",data);
-            Alert.alert("Payment Success","",
-                [
-                    {
-                        text:"OK",
-                        onPress:()=>{
-                            if(paymentData){
-                                VerifyPayment();
-                            }
-                            else {
-                                Alert.alert("Payment Verification Not Proceed...Internal Server Error, Please Try Again");
+    //         setpaymentData(data);
+    //         console.log("DATA: ",data);
+    //         Alert.alert("Payment Success","",
+    //             [
+    //                 {
+    //                     text:"OK",
+    //                     onPress:()=>{
+    //                         if(paymentData){
+    //                             VerifyPayment();
+    //                         }
+    //                         else {
+    //                             Alert.alert("Payment Verification Not Proceed...Internal Server Error, Please Try Again");
                                 
-                            }
-                        }
-                    }
-                ]
-            )
+    //                         }
+    //                     }
+    //                 }
+    //             ]
+    //         )
             
             
             
-        }).catch((error) => {
-            // handle failure
-            alert(`Error: ${error.code} | ${error.description}`);
-        });
-    }
+    //     }).catch((error) => {
+    //         // handle failure
+    //         alert(`Error: ${error.code} | ${error.description}`);
+    //     });
+    // }
 
-    const VerifyPayment = async () => {
-        try {
+    // const VerifyPayment = async () => {
+    //     try {
            
-            const url = URL + '/verify-payment'
-            const result = await axios.post(url, {
-                razorpay_order_id: paymentData.razorpay_order_id,
-                razorpay_payment_id: paymentData.razorpay_payment_id,
-                razorpay_signature: paymentData.razorpay_signature
+    //         const url = URL + '/verify-payment'
+    //         const result = await axios.post(url, {
+    //             razorpay_order_id: paymentData.razorpay_order_id,
+    //             razorpay_payment_id: paymentData.razorpay_payment_id,
+    //             razorpay_signature: paymentData.razorpay_signature
 
-            },
-                {
-                    headers:
-                    {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+    //         },
+    //             {
+    //                 headers:
+    //                 {
+    //                     Authorization: `Bearer ${token}`
+    //                 }
+    //             }
 
-            );
-            console.log("RESULT STATUS:" ,result.status);
-            if (result.status === 200) {
-                Alert.alert("Payment Verified...!");
-                navigation.navigate('ordersuccess')
-            }
-        }
-        catch (error) {
-            console.log(JSON.stringify(error, null, 2),error);
-            console.log(error?.response?.data?.message || error.message,error);
-            Alert.alert("Payment Verification Failed..Please Try Again🙏"
-            )
-        }
+    //         );
+    //         console.log("RESULT STATUS:" ,result.status);
+    //         if (result.status === 200) {
+    //             Alert.alert("Payment Verified...!");
+    //             navigation.navigate('ordersuccess')
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.log(JSON.stringify(error, null, 2),error);
+    //         console.log(error?.response?.data?.message || error.message,error);
+    //         Alert.alert("Payment Verification Failed..Please Try Again🙏"
+    //         )
+    //     }
 
-        if (result) {
-            navigation.navigate('ordersuccess');
-        }
+    //     if (result) {
+    //         navigation.navigate('ordersuccess');
+    //     }
 
-    }
+    // }
     return (
         <View style={style.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
