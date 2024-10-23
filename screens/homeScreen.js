@@ -8,8 +8,6 @@ import { URL } from "../utils/constants";
 export default function HomeScreen({ navigation }) {
     
     const {token ,isLoggedIn , info}  = useSelector((state) => state.auth) 
-   console.log("TOKEN" ,token);
-   console.log("INFO",info)
     const imgurl = URL+'/';
     const [catdata, setcatData] = useState([]);
     const GetCategoty = async () => {

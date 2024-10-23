@@ -11,8 +11,7 @@ export default function Splash1({navigation}){
                 </Text>
                 <Image source={require('../assets/small-logo.png')}/>
                 <Text style={style.subtitle}>
-                Lorem ipsum dolor sit amet, consetetur 
-sadipscing elitr, sed diam nonumy
+                Get the Freshest Groceries Delivered to Your Doorstep in Just a Few Clicks
                 </Text>
             </View>
             <TouchableOpacity style={{alignSelf:'stretch'}} onPress={()=> navigation.navigate('splash2')}>

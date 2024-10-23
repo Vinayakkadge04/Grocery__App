@@ -21,23 +21,28 @@ export default function LoginScreen(props) {
 
   const dispatch = useDispatch();
 
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [emailError, setemailError] = useState(false);
-  const [passwordError, setpasswordError] = useState(false);
   const [secureText , setSecureText] = useState(true);
   const [isloadding , setisloadding] = useState(false);
-  const loginAPI = async () => {
 
-    !email ? setemailError(true) : setemailError(false) ;
-    !password ? setpasswordError(true) : setpasswordError(false);
+  const {
+    control,
+    handleSubmit,
+    formState :{
+      errors
+    }
+  } = useForm()
+
+
+  const loginAPI = async (data) => {
+    console.log("Hello")
+    console.log(data);
    
     try {
       setisloadding(true);
       const url = URL+"/customer/login";
       const result = await axios.post(url, {
-        customerEmail:email,
-        customerPassword:password
+        customerEmail:data.email,
+        customerPassword:data.password
       });
       
       
@@ -86,18 +91,44 @@ export default function LoginScreen(props) {
           <View>
             <View style={[style.textBox, { justifyContent: 'start' }]}>
               <Ionicons name='mail-outline' size={28} color={'#868889'} />
-              <TextInput onChangeText={(text) => setemail(text)}
-                placeholder='Email Address' style={{ fontSize: 17, marginLeft: 12 ,flex:1}}/>
+
+              <Controller
+                control={control}
+                name='email'
+                render={({field:{onChange, onBlur ,value}})=>(
+                  <TextInput 
+                  // onChangeText={(text) => setemail(text)}
+                  placeholder='Email Address' style={{ fontSize: 17, marginLeft: 12 ,flex:1}}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                />  
+                )}
+                rules={{required : true , pattern : /\S+@\S+\.\S+/}}
+              />
+
             </View>
             {
-              emailError ? <Text style={style.errormsg}>Enter your email</Text> : null
+              errors.email && <Text style={style.errormsg}>Enter valid Email</Text> 
             }
           </View>
           <View style={style.textBox}>
             <View style={{ flex: 1, flexDirection: 'row' ,alignItems:'center'}}>
               <Ionicons name='lock-closed-outline' size={28} color={'#868889'} />
-              <TextInput onChangeText={(text) => setpassword(text)}
-                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 17, marginLeft: 12 , flex:1}} />
+              <Controller
+                control={control}
+                name='password'
+                render={({field :{onChange, onBlur , value}})=>(
+                  <TextInput 
+                  // onChangeText={(text) => setpassword(text)}
+                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 17, marginLeft: 12 , flex:1}}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                 />
+                )}
+                rules={{required:true }}
+              />
             </View>
             <TouchableOpacity onPress={() => {setSecureText(!secureText)}}>
             <Ionicons name={secureText ? 'eye-off-outline' : 'eye-outline'} size={24} color={'#868889'}/>
@@ -105,7 +136,7 @@ export default function LoginScreen(props) {
             
           </View>
           {
-            passwordError ?<Text style={style.errormsg}>Enter your password</Text> :  null 
+            errors.password && <Text style ={style.errormsg}>Password is required</Text>
           }
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20 }}>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
@@ -134,10 +165,10 @@ export default function LoginScreen(props) {
           {isloadding ? (
             <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
           ) : (
-            <TouchableOpacity onPress={() => {
-              loginAPI();
-              console.log(email, password);
-            }}>
+            <TouchableOpacity onPress={
+             handleSubmit(loginAPI) 
+             
+            }>
               <View style={style.butn}>
                 <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Login</Text>
               </View>

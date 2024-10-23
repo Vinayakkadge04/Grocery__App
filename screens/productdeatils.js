@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, SafeAreaView, ScrollView, Alert , ActivityIndicator} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from "axios";
@@ -15,8 +15,12 @@ export default function Description(props) {
     const [data, setData] = useState([]);
     const [vardata, setvardata] = useState([]);
     const [selectweight, setselectweight] = useState();
+    const [isloading , setisloading] = useState(false)
+
     imgurl = URL + '/'
     const GetProducts = async () => {
+        try{
+            setisloading(true)
         const url = URL + `/products/edit/${pId}`;
         let result = await fetch(url,
             {
@@ -30,11 +34,18 @@ export default function Description(props) {
         result = await result.json();
         setData(result);
         console.log(imgurl + data.images)
+        setisloading(false)
+        }
+        catch(error){
+            setisloading(false)
+            console.log(JSON.stringify(error, null,2,"Erron In1"));
+            console.log(error?.response?.data?.message || error.message,"error In 2");
+        }
+        
     }
 
     const GetVarient = async () => {
         try {
-
             const url = URL + `/products/variations/update/${pId}`;
             let result = await fetch(url,
                 {
@@ -60,7 +71,12 @@ export default function Description(props) {
     }, []);
 
     return (
-        <View>
+        
+            isloading ?
+            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                 <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
+            </View> :    
+             <View>
             <ScrollView>
                 <SafeAreaView style={{ flex: 1, backgroundColor: '#F2FFE6' }}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -208,7 +224,7 @@ export default function Description(props) {
             </ScrollView>
 
         </View>
-
+       
     )
 }
 

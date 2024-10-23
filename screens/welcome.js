@@ -22,8 +22,7 @@ export default function Welcome({ navigation }) {
             <Text style={style.title}>Welcome</Text>
           </View>
           <View>
-            <Text style={[style.para , {paddingBottom:20}]}>Lorem ipsum dolor sit amet, consetetur
-              sadipscing elitr, sed diam nonumy</Text>
+            <Text style={[style.para , {paddingBottom:20}]}>Enjoy fresh groceries and great savings at your fingertips!</Text>
           </View>
           {/* <View style={style.textBox}>
             <Text style={{color:'black', fontSize:18,fontWeight:'600'}}>Continue with google</Text>

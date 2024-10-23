@@ -35,16 +35,17 @@ export default function MyOrder({ navigation }) {
             if(result){
                 setloading(false)
                 result = await result.json();
-                setData(result);
+                setData(result.reverse());
 
             }
             
         }
         catch (error) {
+            Alert.alert("Something Went Wrong, Please Try Again")
             setloading(false)
             console.log(JSON.stringify(error, null, 2), 'in error');
             console.log(error?.response?.data?.message || error.message, 'in error');
-            Alert.alert(error)
+           
         }
     }
 
@@ -82,7 +83,9 @@ export default function MyOrder({ navigation }) {
     return (
             <SafeAreaView style={{flex:1}}>
                   
-                  <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
+                  <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}
+                    showsVerticalScrollIndicator={false}
+                  >
                 <View style={style.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Ionicons style={{ fontSize: 34, color: 'black', right: 80 }} name="arrow-back" />
@@ -145,7 +148,7 @@ export default function MyOrder({ navigation }) {
                                                                              <Image style={{ height: 65, width: 65, resizeMode: 'stretch' }} source={{ uri: imgurl + productitem.images }} />
                                                                          </View>
                                                                          <View>
-                                                                             <Text style={style.price}>{productitem.totalPrice}</Text>
+                                                                             <Text style={style.price}>Rs {productitem.totalPrice}</Text>
                                                                              <Text style={style.producttitle}>{productitem.title}</Text>
  
                                                                          </View>
@@ -188,7 +191,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
         paddingVertical: 30,
-        paddingTop: 60,
+        position:'static',
         paddingHorizontal: 18,
 
     },

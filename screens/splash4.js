@@ -16,8 +16,7 @@ export default function Splash4({navigation}){
                 </Text>
                 
                 <Text style={style.subtitle}>
-                Lorem ipsum dolor sit amet, consetetur 
-                sadipscing elitr, sed diam nonumy
+                Affordable Prices on Quality Products – Discounts Storewide
                 </Text>
             </View>
             <TouchableOpacity style={{alignSelf:'stretch'}} 

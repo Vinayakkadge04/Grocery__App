@@ -12,8 +12,7 @@ Quality Fruits
                 </Text>
                 
                 <Text style={style.subtitle}>
-                Lorem ipsum dolor sit amet, consetetur 
-sadipscing elitr, sed diam nonumy
+                Taste the Difference with Our Hand-Selected Premium Fruits
                 </Text>
             </View>
             <TouchableOpacity style={{alignSelf:'stretch'}} onPress={()=> navigation.navigate('splash4')}>

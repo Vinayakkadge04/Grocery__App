@@ -11,8 +11,7 @@ export default function Splash2({navigation}){
                 </Text>
                 
                 <Text style={style.subtitle}>
-                Lorem ipsum dolor sit amet, consetetur 
-sadipscing elitr, sed diam nonumy
+                Pure, Fresh, and Delicious Dairy, Straight to Your Home
                 </Text>
             </View>
             <TouchableOpacity style={{alignSelf:'stretch'}} onPress={()=> navigation.navigate('splash3')}>

@@ -48,7 +48,7 @@ export default function ForgotPassword(props){
             <ScrollView>
             <View style={[style.body,{top:60}]}>
                     <Text style={style.title}>Forgot Password</Text>
-                    <Text style={style.subtitle}>Lorem ipsum dolor sit amet, consetetur {'\n'}sadipscing elitr, sed diam nonumy</Text>
+                    <Text style={style.subtitle}> We’ll help you reset it—just enter your email! and New Password</Text>
                     <View style={style.textbox}>
                         <Ionicons style={style.icon} name="mail-outline"/>
                         <TextInput style={{ fontSize: 17 ,flex:1}}

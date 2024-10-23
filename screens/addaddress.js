@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView, Alert , ActivityIndicator} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { Controller, useForm } from 'react-hook-form'
 import { URL } from "../utils/constants";
-export default function ShippingAddress({ navigation }) {
+export default function AddAddress({ navigation }) {
 
 
-    const {token , info} = useSelector((state)=>state.auth)
+    const { token, info } = useSelector((state) => state.auth)
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const [Name, setName] = useState('');
@@ -17,45 +18,65 @@ export default function ShippingAddress({ navigation }) {
     const [zip, setZip] = useState('');
     const [city, setCity] = useState('');
     const [country, setCountry] = useState('');
+    const [isloadding , setisloadding] = useState(false)
+    const { control,
+        handleSubmit,
+        formState: {
+            errors
+        }
 
+    } = useForm()
 
-    const UpdateData = async () => {
+    const submit = (data) => {
+        
+        console.log("name",data.Name)
+        console.log("email",data.email)
+        console.log("phone",data.phone)
+        console.log("address",data.address)
+        console.log("zip",data.zip)
+        console.log("counttry",data.country)
+        console.log("city",data.city)    }
+
+    const UpdateData = async (data) => {
         try {
             
-            const url = URL+`/customer/update/${info.customerId}`;
+            setisloadding(true)
+            const url = URL + `/customer/update/${info.customerId}`;
             
-            const formData = new FormData();
-            formData.append("customerName", Name);
-            formData.append("customerEmail", email);
-            formData.append("customerPhone", phone);
-            formData.append("customerAddress", address);
-            formData.append("customerZipCode", zip);
-            formData.append("customerCity", city);
-            formData.append("customerCountry", country);
+            const result = await axios.post(url, {
+                customerName: data.Name,
+                customerEmail: data.email,
+                customerPhone: data.phone,
+                customerAddress: data.address,
+                customerZipCode: data.zip,
+                customerCity: data.city,
+                customerCountry: data.country
 
-            const result = await axios.post(url, formData, {
-                headers: {
-                     Authorization : `Bearer ${token}`
-                },
             },
-            
-        );
-            if (result.status === 200) {
-                console.log("Hello");
-                Alert.alert("User Data Updated Successfully");
+                {
+                    headers: {
 
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            console.log("StatusCode", result.status)
+            if (result.status === 200) {
+                setisloadding(false)
+                Alert.alert("Data Updated Successfully")
             }
-        } catch (error) {
-            Alert.alert("User Data Not Updated")
-            console.log(JSON.stringify(error, null, 2));
-            console.log(error?.response?.data?.message || error.message);
+        }
+
+        catch (error) {
+            Alert.alert("Something Went Wrong...Please Try Again")
+            setisloadding(false)
+            console.log("Error to Update Customer", error);
         }
     }
 
-   
 
     useEffect(() => {
-      
+
     }, []);
 
 
@@ -70,50 +91,142 @@ export default function ShippingAddress({ navigation }) {
                         <Text style={style.headertitle}>About Me</Text>
                     </View>
 
-
                     <View style={{ marginHorizontal: 20, marginTop: 10 }}>
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="person-outline" />
-                            <TextInput
-                                onChangeText={(text) => setName(text)}
-                                style={style.inputtext} placeholder={info.customerName ? `${info.customerName}` : "Enter your name"} />
+                            <Controller
+                                name='Name'
+                                control={control}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        // onChangeText={(text) => setName(text)}
+                                        style={style.inputtext}
+                                        placeholder={info.customerName ? `${info.customerName}` : 'Enter your name'}
+                                        value={value}
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                    />
+                                )}
+                                rules={{ required: true }}
+                            />
                         </View>
+                        {
+                            errors.Name && <Text style={style.errtext}>Name can not be empty</Text>
+                        }
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="mail-outline" />
-                            <TextInput
-                                onChangeText={(text) => setemail(text)}
-                                style={style.inputtext} placeholder={info ? `${info.customerEmail}` : "Name"}  />
+                            <Controller
+                                name="email"
+                                control={control}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        style={style.inputtext} placeholder={info ? `${info.customerEmail}` : "Name"}
+                                        value={value}
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                    />
+                                )}
+                                rules={{ required: true, pattern: /\S+@\S+\.\S+/ }}
+                            />
                         </View>
+                        {
+                            errors.email && <Text style={style.errtext}>Enter Valid Email </Text>
+                        }
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="call-outline" />
-                            <TextInput
-                                onChangeText={(text) => setphone(text)}
-                                style={style.inputtext} placeholder={info.customerPhone ? `${info.customerPhone}` : "Phone"}  />
+                            <Controller
+                                name="phone"
+                                control={control}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        // onChangeText={(text) => setphone(text)}
+                                        style={style.inputtext} placeholder={info.customerPhone ? `${info.customerPhone}` : "Phone"}
+                                        value={value}
+                                        onBlur={onBlur}
+                                        onChangeText={onChange} />
+                                )}
+                                rules={{ required: true, pattern: /^\d{10}$/ }}
+
+                            />
                         </View>
+                        {errors.phone && <Text style={style.errtext}>Invalid Phone</Text>}
                         <View style={style.textbox}>
-                            <Ionicons size={28} color={'grey'} name="location-outline"/>
-                            <TextInput
-                                onChangeText={(text) => setAddress(text)}
-                                style={style.inputtext} placeholder={info.customerAddress ? `${info.customerAddress}` : "Address"} />
+                            <Ionicons size={28} color={'grey'} name="location-outline" />
+                            <Controller
+                                name="address"
+                                control={control}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        // onChangeText={(text) => setphone(text)}
+                                        style={style.inputtext} placeholder={info.customerAddress ? `${info.customerAddress}` : "Phone"}
+                                        value={value}
+                                        onBlur={onBlur}
+                                        onChangeText={onChange} />
+                                )}
+                                rules={{ required: true}}
+
+                            />
                         </View>
+                        {errors.address && <Text style={style.errtext}>location is required</Text>}
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="card-outline" />
-                            <TextInput
-                                onChangeText={(text) => setZip(text)}
-                                style={style.inputtext} placeholder={info.customerZipCode ? `${info.customerZipCode}` : "Zip Code"}  />
+                            <Controller
+                                control={control}
+                                name="zip"
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        // onChangeText={(text) => setZip(text)}
+                                        style={style.inputtext} placeholder={info.customerZipCode ? `${info.customerZipCode}` : "Zip Code"}
+                                        
+                                        onBlur={onBlur}
+                                        value={value}
+                                        onChangeText={onChange}
+                                    />
+                                )}
+                                rules={{ required: true }}
+                            />
+
                         </View>
+                        {errors.zip && <Text style={style.errtext}>Zip Code required</Text>}
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="map-outline" />
-                            <TextInput
-                                onChangeText={(text) => setCity(text)}
-                                style={style.inputtext} placeholder={info.customerCity ? `${info.customerCity}` : "City"}  />
+                            <Controller
+                                control={control}
+                                name="city"
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        // onChangeText={(text) => setCity(text)}
+                                        style={style.inputtext} placeholder={info.customerCity ? `${info.customerCity}` : "City"}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                        value={value}
+                                    />
+
+                                )}
+                                rules={{ required: true }}
+                            />
+
                         </View>
+                        {errors.city && <Text style={style.errtext}>City required</Text>}
                         <View style={style.textbox}>
                             <Ionicons size={28} color={'grey'} name="earth-outline" />
-                            <TextInput
-                                onChangeText={(text) => setCountry(text)}
-                                style={style.inputtext} placeholder={info.customerCountry ? `${info.customerCountry}` : "Country"}  />
+                            <Controller
+                                name="country"
+                                control={control}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        // onChangeText={(text) => setCountry(text)}
+                                        style={style.inputtext} placeholder={info.customerCountry ? `${info.customerCountry}` : "Country"}
+                                        value={value}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                    />
+                                )}
+                                rules={{ required: true }}
+                            />
                         </View>
+                        {errors.country && <Text style={style.errtext}>Country Required</Text>}
+
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', margin: 20, }}>
@@ -128,14 +241,18 @@ export default function ShippingAddress({ navigation }) {
 
                 </View>
 
-
-                <TouchableOpacity onPress={() => {
-                    UpdateData();
-                }}>
-                    <View style={style.butn}>
-                        <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Update</Text>
-                    </View>
-                </TouchableOpacity>
+            {
+                isloadding ?
+                <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} /> :
+                <TouchableOpacity onPress={
+                    handleSubmit(UpdateData)
+                 }>
+                     <View style={style.butn}>
+                         <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Update</Text>
+                     </View>
+                 </TouchableOpacity>
+            }
+               
             </View>
         </ScrollView>
     );
@@ -198,10 +315,12 @@ const style = StyleSheet.create({
         borderRadius: 6,
         alignSelf: 'stretch',
         gap: 10,
-        paddingVertical: 18
+        paddingVertical: 18,
+
     },
     inputtext: {
-        fontSize: 18
+        fontSize: 18,
+        flex: 1
     },
     butn: {
         backgroundColor: "#6CC51D",
@@ -212,6 +331,9 @@ const style = StyleSheet.create({
         shadowOffset: { height: 2, width: 2 },
         shadowOpacity: 0.2,
         margin: 20,
-        marginTop:0
+        marginTop: 0
     },
+    errtext: {
+        color: 'red'
+    }
 })
