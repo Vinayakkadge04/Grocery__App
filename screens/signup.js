@@ -85,7 +85,7 @@ export default function Signup(props) {
               render={({field:{onChange , onBlur , value}})=>(
                 <TextInput
                 //  onChangeText={(text) => setname(text)}
-                placeholder='Name' style={{ fontSize: 15, marginLeft: 12 ,flex:1}} 
+                placeholder='Name' style={{ fontSize: 17, marginLeft: 12 ,flex:1}} 
                 onChangeText={onChange}
                 onBlur={onBlur}
                 value={value}
@@ -108,7 +108,7 @@ export default function Signup(props) {
               render={({field:{onChange, onBlur , value}})=>(
                 <TextInput 
                 // onChangeText={(text) => setemail(text)}
-                placeholder='Email' style={{ fontSize: 15, marginLeft: 12,flex:1 }} 
+                placeholder='Email' style={{ fontSize: 17, marginLeft: 12,flex:1 }} 
                 onChangeText={onChange}
                 onBlur={onBlur}
                 value={value}
@@ -129,7 +129,7 @@ export default function Signup(props) {
               render={({field:{onChange , onBlur , value}})=>(
                 <TextInput 
                 // onChangeText={(text) => setphone(text)}
-              placeholder='Phone' style={{ fontSize: 15, marginLeft: 12 ,flex:1}} 
+              placeholder='Phone' style={{ fontSize: 17, marginLeft: 12 ,flex:1}} 
               onChangeText={onChange}
               onBlur={onBlur}
               value={value}
@@ -152,7 +152,7 @@ export default function Signup(props) {
               render={({field:{onChange , onBlur , value}})=>(
                 <TextInput 
                 // onChangeText={(text) => setpassword(text)}
-                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 15, marginLeft: 12 ,flex:1}} 
+                placeholder='Password' secureTextEntry={secureText} style={{ fontSize: 17, marginLeft: 12 ,flex:1}} 
                 onChangeText={onChange}
                 onBlur={onBlur}
                 value={value}
@@ -183,7 +183,7 @@ export default function Signup(props) {
           }
          
           <View style={style.richtext}>
-            <Text style={{ color: 'grey', fontSize: 18 }}>Already have an account ?</Text>
+            <Text style={{ color: 'grey', fontSize: 18 }}>Already have an account? </Text>
             <TouchableOpacity onPress={() => props.navigation.navigate('Login')}>
         
               <Text style={{ fontSize: 18, fontWeight: '600' }}>Login</Text>
@@ -222,7 +222,8 @@ const style = StyleSheet.create({
   bottomcontainer: {
     backgroundColor: '#F4F5F9',
     padding: 20,
-    borderRadius: 12
+    borderTopLeftRadius:12,
+    borderTopRightRadius:12
   },
   title: {
     fontSize: 25,
@@ -235,12 +236,13 @@ const style = StyleSheet.create({
   },
   textBox: {
     backgroundColor: 'white',
-    padding: 14,
+    padding: 8,
+    paddingHorizontal:14,
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: 'black',
-    shadowOffset: { height: 2, width: 2 },
-    shadowOpacity: 0.2,
+    shadowOffset: { height: 2.5, width: 2 },
+    shadowOpacity: 0.3,
     marginTop: 10,
     display: 'flex',
     flexDirection: 'row',

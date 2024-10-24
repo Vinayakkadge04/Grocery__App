@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView, Alert , ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -11,38 +11,64 @@ export default function AddAddress({ navigation }) {
     const { token, info } = useSelector((state) => state.auth)
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-    const [Name, setName] = useState('');
-    const [email, setemail] = useState('');
-    const [phone, setphone] = useState('');
-    const [address, setAddress] = useState('');
-    const [zip, setZip] = useState('');
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState('');
-    const [isloadding , setisloadding] = useState(false)
+    const [isloadding, setisloadding] = useState(false)
     const { control,
         handleSubmit,
+        setValue,
         formState: {
             errors
         }
 
     } = useForm()
 
-    const submit = (data) => {
-        
-        console.log("name",data.Name)
-        console.log("email",data.email)
-        console.log("phone",data.phone)
-        console.log("address",data.address)
-        console.log("zip",data.zip)
-        console.log("counttry",data.country)
-        console.log("city",data.city)    }
+    const MyData = async () => {
+        console.log("ID",info.customerId)
+        try {
+            setisloadding(true)
+            const url = URL + `/customer/edit/${info.customerId}`
+            console.log(url);
+            let result = await fetch(url,
+                {
+                    headers:
+                    {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            result = await result.json();
+
+            if (result) {
+                console.log("INFO", result)
+                console.log(result.customer.customerPhone)
+                setValue('Name', result.customer.customerName);
+                setValue('email', result.customer.customerEmail);
+                setValue('phone', String(result.customer.customerPhone));
+                setValue('address', result.customer.customerAddress);
+                setValue('zip', result.customer.customerZipCode ? String(result.customer.customerZipCode) : null);
+                setValue('city', result.customer.customerCity);
+                setValue('country', result.customer.customerCountry);
+            }
+            setisloadding(false)
+            console.log("PHONE", phone)
+        }
+        catch (error) {
+            setisloadding(false)
+            console.log("Error fetching my Data,", error)
+        }
+
+    }
+
+    useEffect(()=>
+        { MyData()}
+     ,[])
+
+   
 
     const UpdateData = async (data) => {
         try {
-            
+
             setisloadding(true)
             const url = URL + `/customer/update/${info.customerId}`;
-            
+
             const result = await axios.post(url, {
                 customerName: data.Name,
                 customerEmail: data.email,
@@ -85,7 +111,7 @@ export default function AddAddress({ navigation }) {
             <View style={{ justifyContent: 'space-between', flex: 1 }}>
                 <View>
                     <View style={style.header}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Main')}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
                             <Ionicons style={{ fontSize: 34, color: 'black', right: 80 }} name="arrow-back" />
                         </TouchableOpacity>
                         <Text style={style.headertitle}>About Me</Text>
@@ -101,7 +127,7 @@ export default function AddAddress({ navigation }) {
                                     <TextInput
                                         // onChangeText={(text) => setName(text)}
                                         style={style.inputtext}
-                                        placeholder={info.customerName ? `${info.customerName}` : 'Enter your name'}
+                                        placeholder={'Enter your name'}
                                         value={value}
                                         onBlur={onBlur}
                                         onChangeText={onChange}
@@ -120,7 +146,7 @@ export default function AddAddress({ navigation }) {
                                 control={control}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
-                                        style={style.inputtext} placeholder={info ? `${info.customerEmail}` : "Name"}
+                                        style={style.inputtext} placeholder={"Email"}
                                         value={value}
                                         onBlur={onBlur}
                                         onChangeText={onChange}
@@ -140,7 +166,7 @@ export default function AddAddress({ navigation }) {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         // onChangeText={(text) => setphone(text)}
-                                        style={style.inputtext} placeholder={info.customerPhone ? `${info.customerPhone}` : "Phone"}
+                                        style={style.inputtext} placeholder={ "Phone"}
                                         value={value}
                                         onBlur={onBlur}
                                         onChangeText={onChange} />
@@ -158,12 +184,12 @@ export default function AddAddress({ navigation }) {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         // onChangeText={(text) => setphone(text)}
-                                        style={style.inputtext} placeholder={info.customerAddress ? `${info.customerAddress}` : "Phone"}
+                                        style={style.inputtext} placeholder={"Location"}
                                         value={value}
                                         onBlur={onBlur}
                                         onChangeText={onChange} />
                                 )}
-                                rules={{ required: true}}
+                                rules={{ required: true }}
 
                             />
                         </View>
@@ -176,8 +202,8 @@ export default function AddAddress({ navigation }) {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         // onChangeText={(text) => setZip(text)}
-                                        style={style.inputtext} placeholder={info.customerZipCode ? `${info.customerZipCode}` : "Zip Code"}
-                                        
+                                        style={style.inputtext} placeholder={"Zip Code"}
+
                                         onBlur={onBlur}
                                         value={value}
                                         onChangeText={onChange}
@@ -196,7 +222,7 @@ export default function AddAddress({ navigation }) {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         // onChangeText={(text) => setCity(text)}
-                                        style={style.inputtext} placeholder={info.customerCity ? `${info.customerCity}` : "City"}
+                                        style={style.inputtext} placeholder={"City"}
                                         onChangeText={onChange}
                                         onBlur={onBlur}
                                         value={value}
@@ -216,7 +242,7 @@ export default function AddAddress({ navigation }) {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         // onChangeText={(text) => setCountry(text)}
-                                        style={style.inputtext} placeholder={info.customerCountry ? `${info.customerCountry}` : "Country"}
+                                        style={style.inputtext} placeholder={"Country"}
                                         value={value}
                                         onChangeText={onChange}
                                         onBlur={onBlur}
@@ -241,18 +267,18 @@ export default function AddAddress({ navigation }) {
 
                 </View>
 
-            {
-                isloadding ?
-                <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} /> :
-                <TouchableOpacity onPress={
-                    handleSubmit(UpdateData)
-                 }>
-                     <View style={style.butn}>
-                         <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Update</Text>
-                     </View>
-                 </TouchableOpacity>
-            }
-               
+                {
+                    isloadding ?
+                        <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} /> :
+                        <TouchableOpacity onPress={
+                            handleSubmit(UpdateData)
+                        }>
+                            <View style={style.butn}>
+                                <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Update</Text>
+                            </View>
+                        </TouchableOpacity>
+                }
+
             </View>
         </ScrollView>
     );
@@ -265,7 +291,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
         paddingVertical: 30,
-        paddingTop: 60,
+
         paddingHorizontal: 18,
 
     },
@@ -304,7 +330,8 @@ const style = StyleSheet.create({
     },
     textbox: {
         backgroundColor: 'white',
-        padding: 14,
+        padding: 8,
+        paddingHorizontal: 14,
         alignItems: 'center',
         shadowColor: 'black',
         shadowOffset: { height: 2, width: 2 },
@@ -315,7 +342,7 @@ const style = StyleSheet.create({
         borderRadius: 6,
         alignSelf: 'stretch',
         gap: 10,
-        paddingVertical: 18,
+
 
     },
     inputtext: {

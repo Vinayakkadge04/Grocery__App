@@ -5,7 +5,7 @@ import { URL } from "../utils/constants";
 import { useSelector } from "react-redux";
 
 
-export default function MyOrder({ navigation }) {
+export default function MyOrder({navigation}) {
 
     const { token } = useSelector((state) => state.auth)
     const imgurl = URL + '/';
@@ -103,8 +103,8 @@ export default function MyOrder({ navigation }) {
                                     
                                      return (
                                         
-                                         <View>
-                                             <View key={index} style={style.card}>
+                                         <View key={index} >
+                                             <View style={style.card}>
  
                                                  <View style={style.cardleft}>
                                                      <View style={style.cardbtm1}>
@@ -141,8 +141,8 @@ export default function MyOrder({ navigation }) {
                                                      item.products.map((productitem, index) => {
                                                      
                                                          return (
-                                                             <View>
-                                                                 <View key={index} style={style.productcontainer}>
+                                                             <View key={index}>
+                                                                 <View style={style.productcontainer}>
                                                                      <View style={style.leftcontent}>
                                                                          <View style={style.imagebg}>
                                                                              <Image style={{ height: 65, width: 65, resizeMode: 'stretch' }} source={{ uri: imgurl + productitem.images }} />
@@ -193,7 +193,7 @@ const style = StyleSheet.create({
         paddingVertical: 30,
         position:'static',
         paddingHorizontal: 18,
-
+        
     },
     headertitle: {
         fontSize: 26,

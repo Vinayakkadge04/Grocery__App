@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../component/redux/Authslice";
 
 
-export default function Profile(props) {
+export default function Profile({navigation}) {
   
     const {info} = useSelector((state) => state.auth)
     const dispatch = useDispatch()
@@ -26,7 +26,7 @@ export default function Profile(props) {
             </View>
 
             <View style={{ gap: 24, top: -30 }}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('addaddress')}>
+                <TouchableOpacity onPress={() =>navigation.navigate('addaddress')}>
                     <View style={style.row}>
                         <View style={style.left}>
                             <Ionicons size={30} style={style.icon} name='person-circle-outline' />
@@ -37,7 +37,7 @@ export default function Profile(props) {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=>props.navigation.navigate('order')}>    
+                <TouchableOpacity onPress={()=>navigation.navigate('order')}>    
                 <View style={style.row}>
                    
                     <View style={style.left}>
@@ -106,12 +106,11 @@ export default function Profile(props) {
                     <View style={style.left}>
                         <AntDesign size={22} style={style.icon} name='logout' />
                         <TouchableOpacity onPress={() => 
-                            {   
+                             {   
                                 dispatch(logout());
-                                props.navigation.navigate('Login')
+                                navigation.navigate('Login')
                                 }
-                            }
-                        >
+                            }>
                         <Text style={style.text}>Sign out</Text>
                         </TouchableOpacity>
                         

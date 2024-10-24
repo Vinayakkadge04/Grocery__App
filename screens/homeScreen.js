@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
-import { View, Text, Image, TextInput, StyleSheet, ScrollView, TouchableOpacity ,Alert} from 'react-native';
+import { View, Text, Image, TextInput, StyleSheet, ScrollView, TouchableOpacity ,Alert, SafeAreaView} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
@@ -66,11 +66,12 @@ export default function HomeScreen({ navigation }) {
     }, []);
 
     return (
-        <View style={{ padding: 20, paddingTop: 40  , color:""}}>
+        <SafeAreaView>
+        <View style={{ padding: 20  , color:""}}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ gap: 10, marginVertical: 10, paddingVertical: 10 }}>
-                <Text style={{fontSize:24, fontWeight:'600'}}>Hello {info.customerName}!</Text>
+                <Text style={{fontSize:28, fontWeight:'600',marginBottom:10, color:'black'}}>Hello, {info.customerName}!</Text>
                 {/* <View style={[style.container, { justifyContent: 'space-between', padding: 20, borderRadius: 8, backgroundColor: "#e6e6f0" }]}>
                     <View style={[style.container]}>
                         <Ionicons style={style.icon} name="search" />
@@ -106,23 +107,25 @@ export default function HomeScreen({ navigation }) {
 
 
                 <ScrollView horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                >
+                    showsHorizontalScrollIndicator={false} >
                     <View style={style.category}>
                         {
+                           
                             catdata.length ?
                                 catdata.map((item , index) =>
-
+                                (
                                     <TouchableOpacity  key={index} onPress={() => { navigation.navigate('vegetable', { title: item.categoryName, id: item.categoryId }) }}>
                                         <View style={style.category2}>
                                             <View style={[style.categoryImage, { backgroundColor: '#E6F2EA' }]}>
                                                 <Image
-                                                    style={{ width: 45, height: 45, resizeMode: 'stretch',}}
+                                                    style={{ width: 85, height: 85, resizeMode: 'stretch',}}
                                                     source={{ uri: imgurl + item.categoryImage }} />
                                             </View>
-                                            <Text style={{ color: '#868889', fontSize: 12 }}>{item.categoryName}</Text>
+                                            <Text style={{ color: '#868889', fontSize: 18 }}>{item.categoryName}</Text>
                                         </View>
                                     </TouchableOpacity>
+                                )
+
                                 ) : null
                         }
 
@@ -139,10 +142,7 @@ export default function HomeScreen({ navigation }) {
                     </View>
                 </TouchableOpacity>
 
-                <View>
-                    <Text></Text>
-                </View>
-
+   
                 <TouchableOpacity>
                     <View>
                         <View style={style.container}>
@@ -150,7 +150,6 @@ export default function HomeScreen({ navigation }) {
                             Array.isArray(data) && data.map((item, index) =>
 
                                 {
-                                 
                                     return (
                                         <View key={index} style={style.productContainer}>
                                             <TouchableOpacity onPress={() => navigation.navigate('describe', { id: item.productId })}>
@@ -181,6 +180,7 @@ export default function HomeScreen({ navigation }) {
 
             </ScrollView>
         </View>
+        </SafeAreaView>
     );
 }
 const style = StyleSheet.create(
@@ -208,8 +208,9 @@ const style = StyleSheet.create(
             marginVertical: 10
         },
         title: {
-            fontSize: 18,
-            fontWeight: '700',
+            fontSize: 21,
+            fontWeight: '500',
+            color:'black'
         },
         category: {
             display: 'flex',
@@ -227,9 +228,9 @@ const style = StyleSheet.create(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: 30,
-            height: 60,
-            width: 60
+            borderRadius: 60,
+            height: 120,
+            width: 120
         },
         topslider: {
             flexDirection: 'row',
@@ -280,7 +281,7 @@ const style = StyleSheet.create(
             fontSize: 20,
             fontWeight: '600',
             color: 'black',
-            marginVertical: 2
+            marginBottom: 2
         },
         quantity: {
             color: '#868889',
@@ -289,10 +290,10 @@ const style = StyleSheet.create(
 
         },
         productImage: {
-            marginVertical: 10,
+            
             height:90,
             width:90,
-            resizeMode:'contain'
+            resizeMode:'stretch'
         }
     }
 )

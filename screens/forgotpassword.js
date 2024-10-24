@@ -12,16 +12,12 @@ export default function ForgotPassword(props){
           
         try {
             const url = URL + "/customer/forgotpassword";
-            const result = await axios.put(url, {
+            console.log(email , password)
+            const result = await axios.post(url, {
               customerEmail:email,
               customerPassword:password
             },
-            {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                
-            }
+            
         );
             
             console.log(result.data);
@@ -80,7 +76,7 @@ const style = StyleSheet.create({
         justifyContent:'center',
         backgroundColor:'white',
         paddingVertical:15,
-        paddingTop:60,
+        paddingTop:40,
         paddingHorizontal:18,
         marginBottom:20,
         top:0,
@@ -112,11 +108,13 @@ const style = StyleSheet.create({
         fontWeight:'400',
         textAlign:'center',
         color:'grey',
-        marginBottom:20
+        marginBottom:20,
+        marginHorizontal:20
     },
     textbox:{
       backgroundColor:'white',
-      padding:14,
+      padding:8,
+      paddingHorizontal:14,
       alignItems:'center',
       shadowColor:'black',
       shadowOffset:{height:2,width:2},

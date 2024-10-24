@@ -27,7 +27,7 @@ export default function Welcome({ navigation }) {
           {/* <View style={style.textBox}>
             <Text style={{color:'black', fontSize:18,fontWeight:'600'}}>Continue with google</Text>
           </View> */}
-          <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
+          <TouchableOpacity onPress={()=>navigation.navigate('signup')}>
           <View style={style.butn}>
             <Text style={{color:'white', fontSize:18,fontWeight:'600'}}>Continue with Email</Text>
           </View>
@@ -99,13 +99,13 @@ const style = StyleSheet.create({
     shadowColor:'black',
     shadowOffset:{height:2,width:2},
     shadowOpacity:0.2,
-    marginTop:10
+    
   },
   richtext:{
     display:'flex',
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'center',
-    paddingTop:20
+    paddingTop:10
   }
 });

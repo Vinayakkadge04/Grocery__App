@@ -33,7 +33,6 @@ export default function Description(props) {
         );
         result = await result.json();
         setData(result);
-        console.log(imgurl + data.images)
         setisloading(false)
         }
         catch(error){
@@ -71,7 +70,6 @@ export default function Description(props) {
     }, []);
 
     return (
-        
             isloading ?
             <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
                  <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
@@ -90,10 +88,7 @@ export default function Description(props) {
                             </View>
                         </View>
                         <View style={style.describecontainer}>
-                            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                                <Text style={style.price}></Text>
-                                <Ionicons style={{ color: 'grey', fontSize: 24, marginRight: 10 }} name="heart-outline" />
-                            </View>
+                            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}></View>
 
                             <Text style={style.producttitle}>{data.title}</Text>
                             <Text style={style.quantity}>Available Stock: {data.stockAtPresent + " " + data.unit}</Text>
@@ -108,12 +103,12 @@ export default function Description(props) {
                                 {
                                     vardata.map((item1, index) => {
                                         return (
-                                            <TouchableOpacity onPress={
+                                            <TouchableOpacity  key={index} onPress={
                                                 () => {
                                                     setselectedRadio(item1.variationId)
                                                     setselectweight(item1.weightOption)
                                                 }}>
-                                                <View key={index} style={style.variation}>
+                                                <View style={style.variation}>
                                                     <View style={style.radio}>
                                                         {
                                                             selectedRadio == item1.variationId ? <View style={style.radiobutton}></View> : null
@@ -172,14 +167,16 @@ export default function Description(props) {
                             </View>
                             <TouchableOpacity onPress={
                                 async () => {
-                                   
-                                    if (selectedRadio === undefined) {
-                                        Alert.alert("Please Select Weight")
+                                    console.log(selectweight)
+                                    console.log(counter)
+                                    console.log(data.stockAtPresent)
+                                    console.log((selectweight * counter) > data.stockAtPresent)
+                                    if ((selectedRadio === undefined) || ((selectweight * counter) > data.stockAtPresent)) {
+                                        Alert.alert("Invalid or Out of Stock Quantity")
                                     }
                                     else {
-
                                         try {
-
+                                            setisloading(true)
                                             const url = URL + '/cart/insert';
                                             const result = await axios.post(url,
                                                 {
@@ -194,23 +191,20 @@ export default function Description(props) {
                                                     }
                                                 }
                                             );
-
+                                            
                                             if (result.status === 200) {
                                                 Alert.alert("Product Added in Cart");
                                                 props.navigation.navigate('cart')
                                             }
-
-
+                                            setisloading(false)
                                         } catch (error) {
-                                            console.log(JSON.stringify(error, null, 2));
-                                            console.log(error?.response?.data?.message || error.message);
-                                            Alert.alert(error.message)
+                                            setisloading(false)
+                                            console.log(JSON.stringify(error, null, 2,"Error in getprodtct1"));
+                                            console.log(error?.response?.data?.message || error.message,"Error in getprodtct2");
+                                            Alert.alert("Something Went Wrong, Please Try Again")
                                         }
 
                                     }
-
-
-
                                 }
                             }>
                                 <View style={style.butn}>
@@ -234,7 +228,7 @@ const style = StyleSheet.create(
             flex: 1,
             justifyContent: 'space-between',
             backgroundColor: 'white',
-            marginTop: 50
+            marginTop: 30
         },
 
 
@@ -244,7 +238,7 @@ const style = StyleSheet.create(
             borderBottomLeftRadius: 150,
             borderBottomRightRadius: 150,
             marginBottom: 60,
-            height: 300
+            height: 250
         },
         describecontainer: {
             backgroundColor: '#F4F5F9',

@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TouchableHighlight, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TouchableHighlight, Image, Alert, ActivityIndicator, SafeAreaView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { URL } from "../utils/constants";
 import { useSelector } from "react-redux";
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from "axios";
+
 export default function Cart({ navigation }) {
     const imgurl = URL + '/';
-    const { token , info} = useSelector((state) => state.auth)
+    const { token, info } = useSelector((state) => state.auth)
     const [cartProduct, setcartProduct] = useState([])
-    const [orderData, setOrderData] = useState({});
     const [total, setTotal] = useState();
-    const [paymentData, setpaymentData] = useState({});
-    console.log(info);
+    const [isloading, setisloading] = useState(false)
+   
     const GetCart = async () => {
         try {
-
+            setisloading(true)
             const url = URL + `/cart`;
             let result = await fetch(url,
                 {
@@ -32,16 +32,17 @@ export default function Cart({ navigation }) {
                 setcartProduct(result.products);
                 setTotal(result.finalTotalPrice);
             }
-
+            setisloading(false)
         }
         catch (error) {
-            console.log(error.response.data.message || error.message,error)
+            setisloading(false)
+            console.log(error.response.data.message || error.message, error)
         }
     }
 
     useEffect(() => {
         GetCart();
-    }, [token]);
+    },[]);
 
     const deleteCart = async (id) => {
         try {
@@ -64,139 +65,9 @@ export default function Cart({ navigation }) {
         GetCart();
     }
 
-    
-    
-    // const createOrder = async () => {
-    //     try {
 
-    //         const url = URL + '/create-order';
-    //         const result = await axios.post(url, {},
-    //             {
-    //                 headers:
-    //                 {
-    //                     Authorization: `Bearer ${token}`
-    //                 }
-    //             }
-    //         );
-
-    //         if (result?.status === 200) {
-    //             setOrderData(result?.data);
-    //             console.log("Order" ,orderData)
-    //             console.log("Result " ,result.data);
-    //             Alert.alert("Press OK to Proceed for Payment...","",
-    //             [
-    //                 {
-    //                     text:"OK",
-    //                     onPress: async() => 
-    //                         {   console.log("Hello");
-    //                             if (orderData){
-    //                                await OpenRazerpay();
-    //                             }
-    //                             else{
-    //                                 Alert.alert("Order Not Created...Try Again")
-    //                             }
-    //                         }
-    //                 }
-    //             ]
-    //             );
-                
-    //         }
-    //         else{
-    //             Alert.alert("Order Not Created...Try Again")
-    //         }
-
-    //     } catch (error) {
-
-    //         console.log(JSON.stringify(error, null, 2),error);
-    //         console.log(error?.response?.data?.message || error.message,error);
-    //         Alert.alert("Network Problem , Please Try Again");
-    //     }
-    // }
-
-    // const OpenRazerpay = () => {
-       
-    //     var options = {
-    //         description: 'Credits towards consultation',
-    //         image: 'https://t4.ftcdn.net/jpg/02/67/29/93/360_F_267299376_Rwmrov0JGO5savkHry0J2ySMhlDd5bJN.jpg',
-    //         currency: 'INR',
-    //         key: 'rzp_test_9xmjkpHzMu3whL',
-    //         amount: `${orderData?.amount}`,
-    //         name: 'Grocery Store',
-    //         order_id: `${orderData?.id}`,
-    //         prefill: {
-    //             email: 'kadgevinayak04@gmail.com',
-    //             contact: '8806204889',
-    //             name: 'Vinayak Kadge'
-    //         },
-    //         theme: { color: '#53a20e' }
-    //     }
-    //         RazorpayCheckout.open(options).then((data) => {
-    //         // handle success
-
-    //         setpaymentData(data);
-    //         console.log("DATA: ",data);
-    //         Alert.alert("Payment Success","",
-    //             [
-    //                 {
-    //                     text:"OK",
-    //                     onPress:()=>{
-    //                         if(paymentData){
-    //                             VerifyPayment();
-    //                         }
-    //                         else {
-    //                             Alert.alert("Payment Verification Not Proceed...Internal Server Error, Please Try Again");
-                                
-    //                         }
-    //                     }
-    //                 }
-    //             ]
-    //         )
-            
-            
-            
-    //     }).catch((error) => {
-    //         // handle failure
-    //         alert(`Error: ${error.code} | ${error.description}`);
-    //     });
-    // }
-
-    // const VerifyPayment = async () => {
-    //     try {
-           
-    //         const url = URL + '/verify-payment'
-    //         const result = await axios.post(url, {
-    //             razorpay_order_id: paymentData.razorpay_order_id,
-    //             razorpay_payment_id: paymentData.razorpay_payment_id,
-    //             razorpay_signature: paymentData.razorpay_signature
-
-    //         },
-    //             {
-    //                 headers:
-    //                 {
-    //                     Authorization: `Bearer ${token}`
-    //                 }
-    //             }
-
-    //         );
-    //         console.log("RESULT STATUS:" ,result.status);
-    //         if (result.status === 200) {
-    //             Alert.alert("Payment Verified...!");
-    //             navigation.navigate('ordersuccess')
-    //         }
-    //     }
-    //     catch (error) {
-    //         console.log(JSON.stringify(error, null, 2),error);
-    //         console.log(error?.response?.data?.message || error.message,error);
-    //         Alert.alert("Payment Verification Failed..Please Try Again🙏"
-    //         )
-    //     }
-
-    //     if (result) {
-    //         navigation.navigate('ordersuccess');
-    //     }
-
-    // }
     return (
+        <SafeAreaView style={{flex:1}}>
         <View style={style.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={style.header}>
@@ -206,43 +77,57 @@ export default function Cart({ navigation }) {
                     <Text style={style.headertitle}>Shopping Cart</Text>
                 </View>
                 <View >
-                    <View style={style.container2}>
-                        <ScrollView
-                            showsVerticalScrollIndicator={false}>
-                            {cartProduct.map((item, index) => {
-                                return (
-                                    <View key={index} style={style.productcontainer}>
-                                        <View style={style.leftcontent}>
-                                            <View style={style.imagebg}>
-                                                <Image style={{ height: 55, width: 55 ,resizeMode:'stretch'}} source={{ uri: imgurl + item.images }} />
-                                            </View>
-                                            <View>
-                                                <Text style={style.price}>Rs {item.totalPrice}</Text>
-                                                <Text style={style.producttitle}>{item.title}</Text>
-                                                <Text style={style.quantity}>Quantity: {item.quantity}</Text>
-                                            </View>
-                                        </View>
-                                        <View>
-                                        </View>
-                                        <View style={style.rightcontent}>
-
-                                            <TouchableOpacity onPress={
-                                                () => {
-                                                    deleteCart(`${item.productId}`)
-                                                }
-                                            }>
-                                                <View>
-                                                    <Ionicons name="trash-outline" color="red" size={22} />
+                    {
+                        isloading ?
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
+                            </View> :
+                            <View style={style.container2}>
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}>
+                                    {
+                                    cartProduct.map((item, index) => 
+                                        {
+                                        return (
+                                            <View key={index} style={style.productcontainer}>
+                                                <View style={style.leftcontent}>
+                                                    <View style={style.imagebg}>
+                                                        <Image style={{ height: 55, width: 55, resizeMode: 'stretch' }} source={{ uri: imgurl + item.images }} />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={style.price}>Rs {item.totalPrice}</Text>
+                                                        <Text style={style.producttitle}>{item.title}</Text>
+                                                        <Text style={style.quantity}>Quantity: {item.quantity}</Text>
+                                                    </View>
                                                 </View>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                )
+                                                <View>
+                                                </View>
+                                                <View style={style.rightcontent}>
 
-                            })
-                            }
-                        </ScrollView>
-                    </View>
+                                                    <TouchableOpacity onPress={
+                                                        () => {
+                                                            deleteCart(`${item.id}`)
+                                                        }
+                                                    }>
+                                                        <View>
+                                                            <Ionicons name="trash-outline" color="red" size={22} />
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        )
+
+                                    })
+                                    }
+                                </ScrollView>
+                            </View>
+                    }
+
+
+
+
+
+
                 </View>
             </ScrollView>
             <View style={style.cartcost}>
@@ -263,8 +148,15 @@ export default function Cart({ navigation }) {
                     <Text style={style.bigtext}>Rs {total}</Text>
                 </View>
                 <TouchableHighlight onPress={() => {
-                    // createOrder();
-                    navigation.navigate('shippingaddress');
+                    console.log(cartProduct,"CartProduct")
+                    if(cartProduct.length === 0){
+                        
+                        Alert.alert("There is no any Product for Checkout")
+                    }
+                    else{
+                        navigation.navigate('shippingaddress');
+                    }
+                   
                 }}>
                     <View style={style.butn}>
                         <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>Checkout</Text>
@@ -272,13 +164,12 @@ export default function Cart({ navigation }) {
                 </TouchableHighlight>
             </View>
         </View>
-
+        </SafeAreaView>
     );
 }
 const style = StyleSheet.create({
 
     container2: {
-        marginHorizontal: 20,
         color: 'white',
 
     },
@@ -287,6 +178,8 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'white',
         marginVertical: 10,
+        marginHorizontal:20
+        
 
     },
     leftcontent: {
@@ -313,7 +206,7 @@ const style = StyleSheet.create({
         fontWeight: '600',
         color: 'black',
         marginVertical: 2,
-        width: 152
+       
     },
     rightcontent: {
         justifyContent: 'space-evenly',
@@ -338,7 +231,8 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        alignSelf: 'stretch'
+        alignSelf: 'stretch',
+        justifyContent:'center'
     },
     header: {
         flexDirection: 'row',
@@ -346,10 +240,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
         paddingVertical: 30,
-        paddingTop: 60,
-        paddingHorizontal: 18,
-        width: 350
-
+        width:390
     },
     headertitle: {
         fontSize: 26,
@@ -386,7 +277,6 @@ const style = StyleSheet.create({
         fontWeight: '700'
     },
     butn: {
-
         backgroundColor: "#6CC51D",
         padding: 20,
         alignItems: 'center',

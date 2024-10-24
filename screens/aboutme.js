@@ -1,11 +1,12 @@
 import React from "react";
-import { StyleSheet , View , Text , TouchableOpacity ,TextInput,ScrollView} from 'react-native';
+import { StyleSheet , View , Text , TouchableOpacity ,TextInput,ScrollView, SafeAreaView} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 export default function Aboutme({navigation}){
 
 
     return(
+        <SafeAreaView>
         <ScrollView>
         <View style={{justifyContent:'space-between',flex:1}}>
             <View>
@@ -68,6 +69,7 @@ export default function Aboutme({navigation}){
             </View>
         </View>
         </ScrollView>
+        </SafeAreaView>
     );
 }
 const style = StyleSheet.create({
@@ -77,7 +79,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
         paddingVertical: 30,
-        paddingTop: 60,
+        // paddingTop: 60,
         paddingHorizontal: 18,
 
     },
@@ -92,7 +94,7 @@ const style = StyleSheet.create({
     },
     textBox:{
         backgroundColor:'white',
-        padding:14,
+        
         alignItems:'center',
         justifyContent:'space-between',
         shadowColor:'black',

@@ -7,7 +7,7 @@ export default function OrderSuccess({navigation}){
     return (
         <View style={style.body}>
            <View style={style.header}>
-                <TouchableOpacity onPress={()=>navigation.navigate('Main')}>
+                <TouchableOpacity onPress={()=>navigation.navigate('Main',{ screen: 'home' })}>
                          <Ionicons style={{fontSize:34,color:'black',right:60}} name="arrow-back"/>
                 </TouchableOpacity>  
                 <Text style={style.headertitle}>Order Success</Text>
@@ -34,13 +34,12 @@ const style = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         backgroundColor:'white',
-        paddingVertical:15,
-        paddingTop:60,
+        paddingVertical:30,
         paddingHorizontal:18,
         marginBottom:20,
         top:0,
         alignSelf:'stretch',
-        right:20
+        
     },
     headertitle:{
         fontSize:26,

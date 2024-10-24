@@ -51,7 +51,11 @@ export default function LoginScreen(props) {
         console.log(result.data.token)
         console.log(result.data.customer)
         dispatch(login({token:result.data.token,info:result.data.customer}));
-        props.navigation.navigate('Main')
+        props.navigation.reset
+        ({
+          index:0,
+          routes:[{name:'Main'}]
+        })
       }
       setisloadding(false)
     } catch (error) {
@@ -127,7 +131,7 @@ export default function LoginScreen(props) {
                 value={value}
                  />
                 )}
-                rules={{required:true }}
+                rules={{required:true}}
               />
             </View>
             <TouchableOpacity onPress={() => {setSecureText(!secureText)}}>
@@ -163,7 +167,7 @@ export default function LoginScreen(props) {
 
 
           {isloadding ? (
-            <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
+            <ActivityIndicator size="large" color="#6CC51D"  />
           ) : (
             <TouchableOpacity onPress={
              handleSubmit(loginAPI) 
@@ -230,7 +234,8 @@ const style = StyleSheet.create({
   },
   textBox: {
     backgroundColor: 'white',
-    padding: 14,
+    padding: 8,
+    paddingHorizontal:14,
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: 'black',

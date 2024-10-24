@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, ScrollView, Image, SafeAreaView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, ScrollView, Image, SafeAreaView ,ActivityIndicator} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { URL } from "../utils/constants";
@@ -11,10 +11,12 @@ export default function Vegetables(props) {
     const { token } = useSelector((state) => state.auth)
     const categoryId = props.route.params.id;
     const [data, setData] = useState([]);
+    const [isloading , setisloading] = useState(false)
+
     const GetProducts = async () => {
 
         try {
-
+            setisloading(true)
             const url = URL + `/products/category/${categoryId}`;
             let result = await fetch(url,
                 {
@@ -28,10 +30,11 @@ export default function Vegetables(props) {
                 result = await result.json();
                 setData(result);
             }
-
+            setisloading(false)
         }
         catch (error) {
-            console.log("Error")
+            setisloading(false)
+            Alert.alert("Something Went Wrong, Please Try Again")
             console.log(JSON.stringify(error, null, 2));
             console.log(error?.response?.data?.message || error.message);
         }
@@ -43,6 +46,12 @@ export default function Vegetables(props) {
 
 
     return (
+
+        isloading ?
+            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                 <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
+            </View> :    
+
         <SafeAreaView style={{flex:1}}>
         <View>
             <View style={style.header}>

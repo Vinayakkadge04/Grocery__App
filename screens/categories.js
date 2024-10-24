@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView , ActivityIndicator} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from "react-redux";
 import { URL } from "../utils/constants";
@@ -10,7 +10,10 @@ export default function Categories(props) {
     const {token} = useSelector((state) => state.auth)
     const imgurl = URL+ '/'
     const [data, setData] = useState([]);
+    const [isloadding , setisloading] =useState(false)
     const GetCategoty = async () => {
+        try{
+        setisloading(true)
         const url = URL +'/categories';
         let result = await fetch(url,
             {
@@ -25,6 +28,13 @@ export default function Categories(props) {
         console.log(result.data)
 
         setData(result);
+        setisloading(false)
+        }
+        catch(error){
+            Alert.alert("Something Went Wrong, Please Try Again")
+            setisloading(false)
+        }
+        
     }
 
     useEffect(() => {
@@ -33,10 +43,16 @@ export default function Categories(props) {
     }, []);
 
     return (
+        isloadding?
+        <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                 <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} />
+            </View>
+            :
+
         <SafeAreaView>
         <View>
             <View style={style.header}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Main')}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('Main',{ screen: 'home' })}>
                     <Ionicons style={{ fontSize: 34, color: 'black' }} name="arrow-back" />
                 </TouchableOpacity>
 
@@ -51,7 +67,7 @@ export default function Categories(props) {
                         data.length ?
                             data.map((item , index) =>{
                                
-                                return (                                
+                                return (                                 
                                 <TouchableOpacity key={index} onPress={()=>{
                                     props.navigation.navigate('vegetable',{title:item.categoryName,id:item.categoryId});
                                 }}>
@@ -135,12 +151,14 @@ const style = StyleSheet.create({
         paddingVertical: 30,
         // paddingTop: 60,
         paddingHorizontal: 18,
-        marginBottom: 10
+        marginBottom: 10,
+        alignItems:'stretch'
 
     },
     headertitle: {
         fontSize: 26,
-        fontWeight: '600'
+        fontWeight: '600',
+      
     },
     container: {
 
@@ -158,7 +176,7 @@ const style = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
         margin: 10,
-        width:120,
+        width:150,
         backgroundColor: 'white',
         paddingVertical: 20
     },

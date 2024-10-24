@@ -9,7 +9,7 @@ export default function TrackOrder({navigation}){
     return(
         <View>
             <View style={style.header}>
-                <TouchableOpacity onPress={()=>navigation.navigate('Main')}>
+                <TouchableOpacity onPress={()=>navigation.navigate('Main',{ screen: 'home' })}>
                          <Ionicons style={{fontSize:34,color:'black',right:80}} name="arrow-back"/>
                 </TouchableOpacity>  
                 <Text style={style.headertitle}>Track Order</Text>
