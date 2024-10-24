@@ -30,7 +30,7 @@ export default function Profile({navigation}) {
                     <View style={style.row}>
                         <View style={style.left}>
                             <Ionicons size={30} style={style.icon} name='person-circle-outline' />
-                            <Text style={style.text}>About me</Text>
+                            <Text style={style.text}>About Me</Text>
                         </View>
                         <Ionicons style={style.foricon} name="chevron-forward" />
 
@@ -111,7 +111,7 @@ export default function Profile({navigation}) {
                                 navigation.navigate('Login')
                                 }
                             }>
-                        <Text style={style.text}>Sign out</Text>
+                        <Text style={style.text}>Sign Out</Text>
                         </TouchableOpacity>
                         
                     </View>

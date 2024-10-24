@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image ,ActivityIndicator, SafeAreaView , Alert} from 'react-native';
+import { View,
+     Text, 
+     ScrollView, 
+     StyleSheet, 
+     TouchableOpacity, 
+     Image ,
+     ActivityIndicator, 
+     SafeAreaView , 
+     Alert,} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { URL } from "../utils/constants";
 import { useSelector } from "react-redux";
@@ -88,7 +96,7 @@ export default function MyOrder({navigation}) {
                   >
                 <View style={style.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons style={{ fontSize: 34, color: 'black', right: 80 }} name="arrow-back" />
+                        <Ionicons style={{ fontSize: 28, color: 'black', right: 100 }} name="arrow-back" />
                     </TouchableOpacity>
                     <Text style={style.headertitle}>My Order</Text>
                 </View>
@@ -127,8 +135,13 @@ export default function MyOrder({navigation}) {
  
                                                      </View>
                                                      <TouchableOpacity onPress={() => {
-                                                         setShow(item.orderId);
-                                                         console.log(item.orderId);
+                                                        if(show){
+                                                            setShow();
+                                                        }
+                                                        else{
+                                                            setShow(item.orderId);
+                                                        }
+                                                         
                                                      }}>
                                                          <View style={style.btn}>
                                                              <Text>Show Products</Text>
@@ -190,27 +203,28 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 22,
         position:'static',
         paddingHorizontal: 18,
         
     },
     headertitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '600',
         right: 20
     },
     cardsection: {
         margin: 20,
-        gap: 20
-
+        gap: 20,
+        borderRadius:10
     },
     card: {
         backgroundColor: 'white',
         padding: 25,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        borderRadius:8
     },
     title: {
         fontSize: 20,
@@ -256,7 +270,8 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'white',
         marginVertical: 10,
-        height:120
+        height:120,
+        borderRadius:6
     },
     leftcontent: {
         padding: 20,

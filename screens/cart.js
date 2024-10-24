@@ -29,7 +29,7 @@ export default function Cart({ navigation }) {
 
             result = await result.json();
             if (result) {
-                setcartProduct(result.products);
+                setcartProduct(result.products.reverse());
                 setTotal(result.finalTotalPrice);
             }
             setisloading(false)
@@ -42,10 +42,11 @@ export default function Cart({ navigation }) {
 
     useEffect(() => {
         GetCart();
-    },[]);
+    },[token]);
 
     const deleteCart = async (id) => {
         try {
+            console.log(id)
             const url = URL + `/cart/delete/${id}`;
             let result = await fetch(url,
                 {
@@ -72,7 +73,7 @@ export default function Cart({ navigation }) {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={style.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons style={{ fontSize: 34, color: 'black', right: 60 }} name="arrow-back" />
+                        <Ionicons style={{ fontSize: 28, color: 'black', right: 90 }} name="arrow-back" />
                     </TouchableOpacity>
                     <Text style={style.headertitle}>Shopping Cart</Text>
                 </View>
@@ -89,7 +90,11 @@ export default function Cart({ navigation }) {
                                     cartProduct.map((item, index) => 
                                         {
                                         return (
-                                            <View key={index} style={style.productcontainer}>
+                                            <TouchableOpacity  key={index} onPress={()=>(
+                                                navigation.navigate('describe', { id: item.productId })
+                                             )}>
+                                                
+                                            <View style={style.productcontainer}>
                                                 <View style={style.leftcontent}>
                                                     <View style={style.imagebg}>
                                                         <Image style={{ height: 55, width: 55, resizeMode: 'stretch' }} source={{ uri: imgurl + item.images }} />
@@ -106,6 +111,7 @@ export default function Cart({ navigation }) {
 
                                                     <TouchableOpacity onPress={
                                                         () => {
+                                                            console.log(item.id,"iddd")
                                                             deleteCart(`${item.id}`)
                                                         }
                                                     }>
@@ -115,6 +121,8 @@ export default function Cart({ navigation }) {
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
+
+                                            </TouchableOpacity>
                                         )
 
                                     })
@@ -178,8 +186,8 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: 'white',
         marginVertical: 10,
-        marginHorizontal:20
-        
+        marginHorizontal:20,
+        borderRadius:6
 
     },
     leftcontent: {
@@ -239,13 +247,13 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 22,
         width:390
     },
     headertitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '600',
-        right: 20
+      
     },
     cartcost: {
         padding: 20,

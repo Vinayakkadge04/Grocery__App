@@ -6,13 +6,12 @@ export default function Welcome({ navigation }) {
     <View style={style.container}>
       <ImageBackground style={style.image} source={require('../assets/auth1.png')}>
         <View style={style.header}>
-          <Ionicons name='arrow-back-outline' size={30} color={'white'} />
+          {/* <Ionicons name='arrow-back-outline' size={30} color={'white'} /> */}
           <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
           <Text style={{
             fontSize: 22,
             fontWeight: '600',
             color: 'white',
-            
           }}>Welcome</Text>
           </View>
          

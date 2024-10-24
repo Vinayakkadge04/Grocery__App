@@ -185,7 +185,7 @@ export default function ShippingAddress({ navigation }) {
             // handle failure
             Alert.alert("Payment Failed...Try Again")
             console.log("Razerpay Error####", error);
-            navigation.navigate('cart')
+            navigation.navigate('failed')
         });
     }
 
@@ -239,7 +239,7 @@ export default function ShippingAddress({ navigation }) {
                 showsVerticalScrollIndicator={false} >
                 <View style={style.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons style={{ fontSize: 34, color: 'black', right: 60 }} name="arrow-back" />
+                        <Ionicons style={{ fontSize: 28, color: 'black', right: 60 }} name="arrow-back" />
                     </TouchableOpacity>
                     <Text style={style.headertitle}>Shipping Address</Text>
                 </View>
@@ -444,7 +444,7 @@ export default function ShippingAddress({ navigation }) {
                             <ActivityIndicator size="large" color="#6CC51D" style={{ marginTop: 20 }} /> :
                             <TouchableOpacity onPress={
                                 // UpdateData();
-                                handleSubmit(checkAddress)
+                                handleSubmit(UpdateData)
 
                             }>
                                 <View style={style.butn}>
@@ -464,13 +464,13 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 22,
 
         paddingHorizontal: 18,
 
     },
     headertitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '600',
         right: 20
     },

@@ -33,8 +33,8 @@ export default function TabbarNavigationContainer(){
                         }})
                         }>
                 <Tab.Screen name='home' component={HomeScreen}/>
-                <Tab.Screen name='cart' component={Cart}/>
                 <Tab.Screen name='category' component={Categories}/>
+                <Tab.Screen name='cart' component={Cart}/>
                 <Tab.Screen name='profile' component={Profile}/>            
              </Tab.Navigator>
     )

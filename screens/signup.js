@@ -28,14 +28,14 @@ export default function Signup(props) {
     try {
       setisloading(true)
       const url = URL + "/customer/";
-      const result = await axios.post(url, {
+      const result = await axios.post(url, 
+        {
         customerName: data.name,
         customerEmail: data.email,
         customerPhone: data.phone,
         customerPassword: data.password
-      },
-      );
-
+      });
+      console.log(result)
       if (result.status === 201) {
        
         Alert.alert("You registered Successfully")
@@ -46,6 +46,9 @@ export default function Signup(props) {
     } 
    
     catch (error) {
+      console.log(
+
+      )
       setisloading(false)
       Alert.alert("Something went wrong...Please Try Again")
       console.log(JSON.stringify(error, null, 2));
@@ -183,8 +186,8 @@ export default function Signup(props) {
           }
          
           <View style={style.richtext}>
+          <TouchableOpacity style={{flexDirection:'row'}} onPress={() => props.navigation.navigate('Login')}>
             <Text style={{ color: 'grey', fontSize: 18 }}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => props.navigation.navigate('Login')}>
         
               <Text style={{ fontSize: 18, fontWeight: '600' }}>Login</Text>
             </TouchableOpacity>

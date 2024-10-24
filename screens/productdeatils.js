@@ -107,6 +107,7 @@ export default function Description(props) {
                                                 () => {
                                                     setselectedRadio(item1.variationId)
                                                     setselectweight(item1.weightOption)
+                                                    setcounter(1)
                                                 }}>
                                                 <View style={style.variation}>
                                                     <View style={style.radio}>
@@ -171,8 +172,11 @@ export default function Description(props) {
                                     console.log(counter)
                                     console.log(data.stockAtPresent)
                                     console.log((selectweight * counter) > data.stockAtPresent)
-                                    if ((selectedRadio === undefined) || ((selectweight * counter) > data.stockAtPresent)) {
-                                        Alert.alert("Invalid or Out of Stock Quantity")
+                                    if ((selectedRadio === undefined)) {
+                                        Alert.alert("Please select Weight")
+                                    } else 
+                                    if((selectweight * counter) > data.stockAtPresent){
+                                        Alert.alert("We Dont have That much quantity");
                                     }
                                     else {
                                         try {
@@ -323,7 +327,7 @@ const style = StyleSheet.create(
         },
         varcontainer: {
             flexDirection: 'column',
-
+            marginBottom:10,
 
         },
         variation: {

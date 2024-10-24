@@ -67,11 +67,13 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView>
-        <View style={{ padding: 20  , color:""}}>
+        <View style={{paddingHorizontal:20,color:""}}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ gap: 10, marginVertical: 10, paddingVertical: 10 }}>
-                <Text style={{fontSize:28, fontWeight:'600',marginBottom:10, color:'black'}}>Hello, {info.customerName}!</Text>
+                <Text style={{fontSize:25, fontWeight:'600',marginBottom:-10, color:'black'}}>Hello,</Text>
+                <Text style={{fontSize:25, fontWeight:'600',marginBottom:10, color:'black'}}>{info.customerName}!</Text>
+                
                 {/* <View style={[style.container, { justifyContent: 'space-between', padding: 20, borderRadius: 8, backgroundColor: "#e6e6f0" }]}>
                     <View style={[style.container]}>
                         <Ionicons style={style.icon} name="search" />
@@ -84,11 +86,11 @@ export default function HomeScreen({ navigation }) {
                     showsHorizontalScrollIndicator={false}>
 
                     <View style={style.category}>
-                        <View >
+                        <View style={{overflow:'hidden',borderRadius:8}}>
                             <Image style={style.bannercontainer}
                                 source={require('../assets/banner2.webp')} />
                         </View>
-                        <View >
+                        <View style={{overflow:'hidden',borderRadius:8}}>
                             <Image style={style.bannercontainer}
                                 source={require('../assets/home-banner.png')} />
                         </View>
@@ -97,7 +99,7 @@ export default function HomeScreen({ navigation }) {
 
 
                 <TouchableOpacity onPress={() => navigation.navigate('category')}>
-                    <View style={[style.container, { justifyContent: 'space-between' }]}>
+                    <View style={[style.container, { justifyContent: 'space-between' ,marginTop:15}]}>
                         <Text style={style.title}>
                             Categories
                         </Text>
@@ -148,14 +150,14 @@ export default function HomeScreen({ navigation }) {
                         <View style={style.container}>
                             { 
                             Array.isArray(data) && data.map((item, index) =>
-
                                 {
+                                    
                                     return (
                                         <View key={index} style={style.productContainer}>
                                             <TouchableOpacity onPress={() => navigation.navigate('describe', { id: item.productId })}>
                                             <View style={style.productcontent}>
                                                 <Image style={style.productImage} source={ item.images ? { uri: imgurl + item.images } : require("../assets/organic.jpeg")} />
-                                                <Text style={style.price}>{item.price}</Text>
+                                                <Text style={style.price}>Rs. {item.price}</Text>
                                                 <Text style={style.producttitle}>{item.title}</Text>
                                                 <Text style={style.quantity}>{item.stockAtPresent + " " + item.unit}</Text>
                                             </View>
@@ -203,9 +205,10 @@ const style = StyleSheet.create(
             color: '#868889'
         },
         homebanner: {
-            resizeMode: 'containe',
-
-            marginVertical: 10
+            borderRadius:12,
+            overflow:'hidden',
+            marginVertical: 10,
+            marginBottom:20,
         },
         title: {
             fontSize: 21,
@@ -217,6 +220,7 @@ const style = StyleSheet.create(
             flexDirection: 'row',
             alignItems: 'center',
             gap: 10,
+            
         },
         category2: {
             display: 'flex',
@@ -254,7 +258,8 @@ const style = StyleSheet.create(
             alignItems: 'center',
             backgroundColor: 'white',
             width: 160,
-            borderRadius: 12
+            borderRadius: 12,
+            
         },
         productcontent: {
             padding: 10,
@@ -281,7 +286,8 @@ const style = StyleSheet.create(
             fontSize: 20,
             fontWeight: '600',
             color: 'black',
-            marginBottom: 2
+            marginBottom: 2,
+            textAlign:'center'
         },
         quantity: {
             color: '#868889',

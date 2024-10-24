@@ -181,8 +181,9 @@ export default function LoginScreen(props) {
 
 
           <View style={style.richtext}>
+          <TouchableOpacity style={{flexDirection:'row'}} onPress={() => props.navigation.navigate('signup')}>
             <Text style={{ color: 'grey', fontSize: 18 }}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => props.navigation.navigate('signup')}>
+            
               <Text style={{ fontSize: 18, fontWeight: '600' }}>Sign up</Text>
             </TouchableOpacity>
           </View>

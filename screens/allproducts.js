@@ -56,13 +56,14 @@ export default function Vegetables(props) {
         <View>
             <View style={style.header}>
                 <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                    <Ionicons style={{ fontSize: 34, color: 'black' }} name="arrow-back" />
+                    <Ionicons style={{ fontSize: 28, color: 'black' }} name="arrow-back" />
                 </TouchableOpacity>
 
                 <Text style={style.headertitle}>{props.route.params.title}</Text>
                 <View></View>
                 {/* <Ionicons style={{ fontSize: 34, color: 'black' }} name="options-sharp" /> */}
             </View>
+            
             <ScrollView style={{marginBottom:120}}> 
                 <View style={style.container1}>
                     <View>
@@ -70,8 +71,7 @@ export default function Vegetables(props) {
                             {
                                 data.length ?
                                     data.map((item, index) => {
-                                        console.log(imgurl + item.images)
-                                        
+                                        console.log(item.prices);
                                         return (
                                             <View key={index} style={style.productContainer}>
                                                  <TouchableOpacity onPress={() => props.navigation.navigate('describe', { id: item.productId })}>
@@ -80,7 +80,7 @@ export default function Vegetables(props) {
                                                 <Image
                                                     style={{ width: 100, height: 100, resizeMode: 'stretch',}}
                                                     source={{ uri: imgurl + item.images }} />                                                               
-                                                    <Text style={style.price}>{item.price}</Text>
+                                                    <Text style={style.price}>Rs {item.price}</Text>
                                                     <Text style={style.producttitle}>{item.title}</Text>
                                                     <Text style={style.quantity}>{item.stockAtPresent + " " + item.unit}</Text>
                                                 </View>
@@ -118,12 +118,12 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 22,
         // paddingTop: 60,
         paddingHorizontal: 18,
     },
     headertitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '600'
     },
     container1: {
@@ -169,7 +169,8 @@ const style = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: 'black',
-        marginVertical: 2
+        marginVertical: 2,
+        textAlign:'center'
     },
     quantity: {
         color: '#868889',

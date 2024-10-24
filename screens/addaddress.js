@@ -112,7 +112,7 @@ export default function AddAddress({ navigation }) {
                 <View>
                     <View style={style.header}>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <Ionicons style={{ fontSize: 34, color: 'black', right: 80 }} name="arrow-back" />
+                            <Ionicons style={{ fontSize: 28, color: 'black', right: 80 }} name="arrow-back" />
                         </TouchableOpacity>
                         <Text style={style.headertitle}>About Me</Text>
                     </View>
@@ -209,7 +209,7 @@ export default function AddAddress({ navigation }) {
                                         onChangeText={onChange}
                                     />
                                 )}
-                                rules={{ required: true }}
+                                rules={{ required: true , pattern:/^\d{6}$/}}
                             />
 
                         </View>
@@ -290,13 +290,13 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 22,
 
         paddingHorizontal: 18,
 
     },
     headertitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '600',
         right: 20
     },

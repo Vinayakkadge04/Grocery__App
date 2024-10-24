@@ -32,6 +32,7 @@ import MyCards from './screens/mycards';
 import Addcards from './screens/addcard';
 import Vegetables from './screens/allproducts';
 import MyOrder from './screens/myorder';
+import OrderFailed from './screens/orderfailed';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +74,7 @@ export default function App() {
         <Stack.Screen name='mycards' component={MyCards}/>
         <Stack.Screen name='addcard' component={Addcards}/>
         <Stack.Screen name='order' component={MyOrder}/>
+        <Stack.Screen name='failed' component={OrderFailed}/>
 
       </Stack.Navigator>
     </NavigationContainer>

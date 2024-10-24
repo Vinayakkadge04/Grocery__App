@@ -53,7 +53,7 @@ export default function Categories(props) {
         <View>
             <View style={style.header}>
                 <TouchableOpacity onPress={() => props.navigation.navigate('Main',{ screen: 'home' })}>
-                    <Ionicons style={{ fontSize: 34, color: 'black' }} name="arrow-back" />
+                    <Ionicons style={{ fontSize: 28, color: 'black' }} name="arrow-back" />
                 </TouchableOpacity>
 
                 <Text style={style.headertitle}>Categories</Text>
@@ -148,7 +148,7 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 22,
         // paddingTop: 60,
         paddingHorizontal: 18,
         marginBottom: 10,
@@ -156,7 +156,7 @@ const style = StyleSheet.create({
 
     },
     headertitle: {
-        fontSize: 26,
+        fontSize: 22,
         fontWeight: '600',
       
     },
@@ -170,7 +170,7 @@ const style = StyleSheet.create({
 
     },
     category2: {
-
+        borderRadius:5,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
